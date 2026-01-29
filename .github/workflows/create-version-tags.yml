@@ -1,0 +1,57 @@
+# .github/workflows/create-version-tags.yml
+name: Create Version Tags
+
+on:
+  push:
+    branches: [main]
+
+jobs:
+  tag-versions:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Create version tags for new artifacts
+        run: |
+          # Find all mcp.json, agent.yaml, and SKILL.md files
+          for manifest in $(find . -name "mcp.json" -o -name "agent.yaml" -o -name "SKILL.md" | grep -v node_modules); do
+            dir=$(dirname "$manifest")
+            
+            # Determine artifact type and extract version
+            if [[ "$manifest" == *"agent.yaml" ]]; then
+              type="agent-packs"
+              version=$(grep -E "^\s*version:" "$manifest" | head -1 | sed 's/.*version:\s*//' | tr -d '"' | tr -d "'")
+            elif [[ "$manifest" == *"mcp.json" ]]; then
+              type="mcp"
+              version=$(grep -o '"version":\s*"[^"]*"' "$manifest" | head -1 | sed 's/.*"\([^"]*\)"/\1/')
+            elif [[ "$manifest" == *"SKILL.md" ]]; then
+              type="skills"
+              version=$(grep -E "^version:" "$manifest" | head -1 | sed 's/version:\s*//' | tr -d '"' | tr -d "'")
+            else
+              continue
+            fi
+            
+            # Extract slug from path (e.g., ./skills/my-skill/SKILL.md -> my-skill)
+            slug=$(echo "$dir" | sed "s|^\./||" | sed "s|^${type}/||" | sed 's|/.*||')
+            
+            # Skip if no version found
+            if [[ -z "$version" || "$version" == "null" ]]; then
+              echo "No version found in $manifest, skipping"
+              continue
+            fi
+            
+            tag="${type}/${slug}/v${version}"
+            
+            # Check if tag already exists
+            if git rev-parse "$tag" >/dev/null 2>&1; then
+              echo "Tag $tag already exists, skipping"
+            else
+              echo "Creating tag: $tag"
+              git tag "$tag"
+              git push origin "$tag"
+            fi
+          done
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

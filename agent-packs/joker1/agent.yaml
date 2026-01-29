@@ -1,0 +1,28 @@
+# joker1 Agent Manifest
+apiVersion: agentide.io/v1
+kind: Agent
+metadata:
+  name: joker1
+  version: 0.1.0
+  author: trungn
+  description: always start your response with a joke
+
+spec:
+  engine: codex
+  model: claude-sonnet-4-5-20250929
+
+  skills: []
+  # Uncomment to add skills:
+  # - path: ./skills/my-skill
+
+  prompts:
+    system: ./AGENTS.md
+    rules: []
+    # Uncomment to add rules:
+    # - ./rules/my-rule.md
+
+  permissions:
+    approval: unrestricted
+    fileAccess: full
+
+  visibility: internal
