@@ -1,4 +1,5 @@
 # .github/workflows/create-version-tags.yml
+# Updated to auto-assign versions when not specified in file
 name: Create Version Tags
 
 on:
@@ -13,42 +14,77 @@ jobs:
         with:
           fetch-depth: 0
 
+      - name: Configure Git
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+
       - name: Create version tags for new artifacts
         run: |
+          # Helper: get latest version from existing tags
+          get_latest_version() {
+            local prefix="$1"
+            git tag -l "${prefix}v*" 2>/dev/null | \
+              sed "s|${prefix}v||" | \
+              sort -t. -k1,1n -k2,2n -k3,3n | \
+              tail -1
+          }
+
+          # Helper: bump patch version
+          bump_patch() {
+            local version="$1"
+            if [[ -z "$version" ]]; then
+              echo "0.0.1"
+            else
+              local major minor patcha
+              IFS='.' read -r major minor patch <<< "$version"
+              patch=$((patch + 1))
+              echo "${major}.${minor}.${patch}"
+            fi
+          }
+
           # Find all mcp.json, agent.yaml, and SKILL.md files
           for manifest in $(find . -name "mcp.json" -o -name "agent.yaml" -o -name "SKILL.md" | grep -v node_modules); do
             dir=$(dirname "$manifest")
-            
+
             # Determine artifact type and extract version
             if [[ "$manifest" == *"agent.yaml" ]]; then
               type="agent-packs"
-              version=$(grep -E "^\s*version:" "$manifest" | head -1 | sed 's/.*version:\s*//' | tr -d '"' | tr -d "'")
+              version=$(grep -E "^\s*version:" "$manifest" | head -1 | sed 's/.*version:\s*//' | tr -d '"' | tr -d "'" | xargs)
             elif [[ "$manifest" == *"mcp.json" ]]; then
               type="mcp"
               version=$(grep -o '"version":\s*"[^"]*"' "$manifest" | head -1 | sed 's/.*"\([^"]*\)"/\1/')
             elif [[ "$manifest" == *"SKILL.md" ]]; then
               type="skills"
-              version=$(grep -E "^version:" "$manifest" | head -1 | sed 's/version:\s*//' | tr -d '"' | tr -d "'")
+              # Look for version in YAML frontmatter (between --- markers)
+              version=$(sed -n '/^---$/,/^---$/p' "$manifest" | grep -E "^version:" | head -1 | sed 's/version:\s*//' | tr -d '"' | tr -d "'" | xargs)
             else
               continue
             fi
-            
+
             # Extract slug from path (e.g., ./skills/my-skill/SKILL.md -> my-skill)
             slug=$(echo "$dir" | sed "s|^\./||" | sed "s|^${type}/||" | sed 's|/.*||')
-            
-            # Skip if no version found
+
+            tag_prefix="${type}/${slug}/"
+
+            # If no version found, auto-assign based on existing tags
             if [[ -z "$version" || "$version" == "null" ]]; then
-              echo "No version found in $manifest, skipping"
-              continue
+              latest=$(get_latest_version "$tag_prefix")
+              version=$(bump_patch "$latest")
+              echo "📦 No version in $manifest, auto-assigning v$version (latest: ${latest:-none})"
+            else
+              # Remove leading 'v' if present
+              version="${version#v}"
+              echo "📦 Using version v$version from $manifest"
             fi
-            
-            tag="${type}/${slug}/v${version}"
-            
+
+            tag="${tag_prefix}v${version}"
+
             # Check if tag already exists
             if git rev-parse "$tag" >/dev/null 2>&1; then
-              echo "Tag $tag already exists, skipping"
+              echo "⚠️  Tag $tag already exists, skipping"
             else
-              echo "Creating tag: $tag"
+              echo "🏷️  Creating tag: $tag"
               git tag "$tag"
               git push origin "$tag"
             fi
