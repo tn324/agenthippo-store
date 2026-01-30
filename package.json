@@ -1,0 +1,16 @@
+{
+  "name": "agenthippo-store",
+  "private": true,
+  "description": "AgentHippo Store - Agent Packs, Skills, and MCP Servers",
+  "scripts": {
+    "build": "bun run scripts/build-index.ts",
+    "dev": "bun run scripts/build-index.ts && bunx serve dist"
+  },
+  "dependencies": {
+    "yaml": "^2.7.1"
+  },
+  "devDependencies": {
+    "@types/bun": "^1.2.14"
+  }
+}
+
