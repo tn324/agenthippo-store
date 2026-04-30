@@ -24,6 +24,7 @@ const ARTIFACT_DIRS = {
 	pack: 'agent-packs',
 	skill: 'skills',
 	mcp: 'mcp',
+	engine: 'engines',
 } as const;
 
 const OUTPUT_DIR = 'dist';
@@ -34,7 +35,7 @@ const OUTPUT_DIR = 'dist';
 
 interface StoreArtifact {
 	id: string;
-	type: 'pack' | 'skill' | 'mcp';
+	type: 'pack' | 'skill' | 'mcp' | 'engine';
 	slug: string;
 	displayName: string;
 	description: string;
@@ -70,6 +71,17 @@ interface McpManifest {
 	description?: string;
 	author?: string;
 	tags?: string[];
+}
+
+interface EngineManifest {
+	id?: string;
+	displayName?: string;
+	description?: string;
+	model?: {
+		defaultModel?: string;
+	};
+	tags?: string[];
+	author?: string;
 }
 
 // -----------------------------------------------------------------------------
@@ -192,6 +204,44 @@ async function parseMcp(mcpDir: string): Promise<StoreArtifact | null> {
 	}
 }
 
+/**
+ * Parse a custom engine from its engine.manifest.json manifest.
+ */
+async function parseEngine(engineDir: string): Promise<StoreArtifact | null> {
+	const manifestPath = join(engineDir, 'engine.manifest.json');
+	const packagePath = join(engineDir, 'package.json');
+	const slug = basename(engineDir);
+
+	try {
+		const content = await readFile(manifestPath, 'utf8');
+		const manifest = JSON.parse(content) as EngineManifest;
+		const stats = await stat(manifestPath);
+
+		let packageVersion: string | undefined;
+		try {
+			const packageJson = JSON.parse(await readFile(packagePath, 'utf8')) as { version?: string };
+			packageVersion = packageJson.version;
+		} catch {
+			// Engines without npm dependencies do not need package.json.
+		}
+
+		return {
+			id: `engine/${slug}`,
+			type: 'engine',
+			slug,
+			displayName: manifest.displayName || manifest.id || slug,
+			description: manifest.description || '',
+			tags: manifest.tags || (manifest.model?.defaultModel ? ['engine', manifest.model.defaultModel] : ['engine']),
+			author: manifest.author,
+			latestVersion: packageVersion || '0.0.0',
+			updatedAt: stats.mtime.toISOString(),
+		};
+	} catch {
+		console.warn(`  ⚠ Could not parse engine: ${slug}`);
+		return null;
+	}
+}
+
 // -----------------------------------------------------------------------------
 // Main Build Function
 // -----------------------------------------------------------------------------
@@ -235,6 +285,9 @@ async function buildIndex() {
 					break;
 				case 'mcp':
 					artifact = await parseMcp(entryPath);
+					break;
+				case 'engine':
+					artifact = await parseEngine(entryPath);
 					break;
 			}
 
