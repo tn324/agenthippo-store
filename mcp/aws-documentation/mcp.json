@@ -1,0 +1,26 @@
+{
+  "name": "aws-documentation",
+  "version": "1.1.21",
+  "description": "AWS Labs MCP server for searching and retrieving current AWS documentation and API reference material.",
+  "transport": "stdio",
+  "command": "uvx",
+  "args": [
+    "awslabs.aws-documentation-mcp-server@latest"
+  ],
+  "env": {
+    "FASTMCP_LOG_LEVEL": "ERROR",
+    "AWS_DOCUMENTATION_PARTITION": "aws"
+  },
+  "label": "AWS Documentation MCP",
+  "author": "AWS Labs",
+  "homepage": "https://awslabs.github.io/mcp/servers/aws-documentation-mcp-server/",
+  "repository": "https://github.com/awslabs/mcp",
+  "license": "Apache-2.0",
+  "tags": [
+    "aws",
+    "cloud",
+    "documentation",
+    "api-reference",
+    "official"
+  ]
+}
