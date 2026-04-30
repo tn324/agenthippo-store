@@ -1,6 +1,6 @@
 # Source Context
 
-Converted from Claude Code plugin: frontend-design
+Adapted for AgentHippo from upstream plugin source: frontend-design
 
 # Frontend Design Plugin
 
@@ -8,7 +8,7 @@ Generates distinctive, production-grade frontend interfaces that avoid generic A
 
 ## What It Does
 
-Claude automatically uses this skill for frontend work. Creates production-ready code with:
+AgentHippo can use this skill for frontend work. Creates production-ready code with:
 
 - Bold aesthetic choices
 - Distinctive typography and color palettes
@@ -23,7 +23,7 @@ Claude automatically uses this skill for frontend work. Creates production-ready
 "Design a settings panel with dark mode"
 ```
 
-Claude will choose a clear aesthetic direction and implement production code with meticulous attention to detail.
+The agent will choose a clear aesthetic direction and implement production code with meticulous attention to detail.
 
 ## Learn More
 

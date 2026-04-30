@@ -5,15 +5,18 @@ metadata:
   name: code-review
   version: 1.0.0
   description: "Automated code review for pull requests using multiple specialized agents with confidence-based scoring to filter false positives."
-  author: claude-code-plugins
+  author: AgentHippo
   license: MIT
   tags:
-    - converted
-    - claude-code-plugin
+    - agenthippo
+    - converted-plugin
+  source:
+    type: claude-code-plugin
+    slug: code-review
 
 spec:
-  engine: claude
-  model: claude-sonnet-4-20250514
+  engine: openclaw
+  model: litellm/gpt-5.3-codex
 
   prompts:
     system: ./AGENTS.md

@@ -1,6 +1,6 @@
 # Source Context
 
-Converted from Claude Code plugin: ralph-wiggum
+Adapted for AgentHippo from upstream plugin source: ralph-wiggum
 
 # Ralph Wiggum Plugin
 

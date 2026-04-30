@@ -15,8 +15,8 @@ You have a `bash` tool. Every response must use it — in this order:
 
 1. Call `bash` with `scripts/search_docs.mjs "<query>"` — search before writing code
 2. Write the code using the search results
-3. Call `bash` with `scripts/validate.mjs --code '...' --model YOUR_MODEL_NAME --client-name YOUR_CLIENT_NAME --client-version YOUR_CLIENT_VERSION --artifact-id YOUR_ARTIFACT_ID --revision REVISION_NUMBER` — validate before returning
-   (Always include these flags. Use your actual model name for YOUR_MODEL_NAME; use claude-code/cursor/etc. for YOUR_CLIENT_NAME. For YOUR_ARTIFACT_ID, generate a stable random ID per code block and reuse it across validation retries. For REVISION_NUMBER, start at 1 and increment on each retry of the same artifact.)
+3. Call `bash` with `scripts/validate.mjs --code '...' --model AGENTHIPPO_MODEL --client-name agenthippo --client-version 1.0.0 --artifact-id YOUR_ARTIFACT_ID --revision REVISION_NUMBER` — validate before returning
+   (Always include these flags. Use the active AgentHippo model name for AGENTHIPPO_MODEL and use agenthippo for the client name. For YOUR_ARTIFACT_ID, generate a stable random ID per code block and reuse it across validation retries. For REVISION_NUMBER, start at 1 and increment on each retry of the same artifact.)
 4. If validation fails: search for the error type, fix, re-validate (max 3 retries)
 5. Return code only after validation passes
 
@@ -269,14 +269,14 @@ When the user asks for Polaris web components (e.g. `s-page`, `s-badge`, `s-butt
 Search the vector store to get the detailed context you need: working examples, field and type definitions, valid values, and API-specific patterns. You cannot trust your trained knowledge — always search before writing code.
 
 ```
-scripts/search_docs.mjs "<component tag name>" --model YOUR_MODEL_NAME --client-name YOUR_CLIENT_NAME --client-version YOUR_CLIENT_VERSION
+scripts/search_docs.mjs "<component tag name>" --model AGENTHIPPO_MODEL --client-name agenthippo --client-version 1.0.0
 ```
 
 Search for the **component tag name**, not the full user prompt.
 
 For example, if the user asks about form in app home:
 ```
-scripts/search_docs.mjs "s-form" --model YOUR_MODEL_NAME --client-name YOUR_CLIENT_NAME --client-version YOUR_CLIENT_VERSION
+scripts/search_docs.mjs "s-form" --model AGENTHIPPO_MODEL --client-name agenthippo --client-version 1.0.0
 ```
 
 ## ⚠️ MANDATORY: Validate Before Returning Code
@@ -284,7 +284,7 @@ scripts/search_docs.mjs "s-form" --model YOUR_MODEL_NAME --client-name YOUR_CLIE
 You MUST run `scripts/validate.mjs` before returning any generated code to the user. Always include the instrumentation flags:
 
 ```
-scripts/validate.mjs --code '...' --model YOUR_MODEL_NAME --client-name YOUR_CLIENT_NAME --client-version YOUR_CLIENT_VERSION --artifact-id YOUR_ARTIFACT_ID --revision REVISION_NUMBER
+scripts/validate.mjs --code '...' --model AGENTHIPPO_MODEL --client-name agenthippo --client-version 1.0.0 --artifact-id YOUR_ARTIFACT_ID --revision REVISION_NUMBER
 ```
 (For YOUR_ARTIFACT_ID, generate a stable random ID per code block and reuse it across validation retries. For REVISION_NUMBER, start at 1 and increment on each retry of the same artifact.)
 

@@ -7,7 +7,7 @@ You are tasked with helping the user create a new Claude Agent SDK application. 
 
 ## Reference Documentation
 
-Before starting, review the official documentation to ensure you provide accurate and up-to-date guidance. Use WebFetch to read these pages:
+Before starting, review the official documentation to ensure you provide accurate and up-to-date guidance. Use web fetch to read these pages:
 
 1. **Start with the overview**: https://docs.claude.com/en/api/agent-sdk/overview
 2. **Based on the user's language choice, read the appropriate SDK reference**:
@@ -22,7 +22,7 @@ Before starting, review the official documentation to ensure you provide accurat
    - Sessions
    - Any other relevant guides based on the user's needs
 
-**IMPORTANT**: Always check for and use the latest versions of packages. Use WebSearch or WebFetch to verify current versions before installation.
+**IMPORTANT**: Always check for and use the latest versions of packages. Use web search or web fetch to verify current versions before installation.
 
 ## Gather Requirements
 
@@ -73,7 +73,7 @@ Based on the user's answers, create a plan that includes:
 
 2. **Check for Latest Versions**:
 
-   - BEFORE installing, use WebSearch or check npm/PyPI to find the latest version
+   - BEFORE installing, use web search or check npm/PyPI to find the latest version
    - For TypeScript: Check https://www.npmjs.com/package/@anthropic-ai/claude-agent-sdk
    - For Python: Check https://pypi.org/project/claude-agent-sdk/
    - Inform the user which version you're installing
@@ -99,15 +99,15 @@ Based on the user's answers, create a plan that includes:
    - Add `.env` to `.gitignore`
    - Explain how to get an API key from https://console.anthropic.com/
 
-6. **Optional: Create .claude directory structure**:
-   - Offer to create `.claude/` directory for agents, commands, and settings
+6. **Optional: Create AgentHippo workspace agent structure**:
+   - Offer to create an AgentHippo workspace directory for agents, commands, and settings
    - Ask if they want any example subagents or slash commands
 
 ## Implementation
 
 After gathering requirements and getting user confirmation on the plan:
 
-1. Check for latest package versions using WebSearch or WebFetch
+1. Check for latest package versions using web search or web fetch
 2. Execute the setup steps
 3. Create all necessary files
 4. Install dependencies (always use latest stable versions)
@@ -159,7 +159,7 @@ Once setup is complete and verified, provide the user with:
 
 ## Important Notes
 
-- **ALWAYS USE LATEST VERSIONS**: Before installing any packages, check for the latest versions using WebSearch or by checking npm/PyPI directly
+- **ALWAYS USE LATEST VERSIONS**: Before installing any packages, check for the latest versions using web search or by checking npm/PyPI directly
 - **VERIFY CODE RUNS CORRECTLY**:
   - For TypeScript: Run `npx tsc --noEmit` and fix ALL type errors before finishing
   - For Python: Verify syntax and imports are correct

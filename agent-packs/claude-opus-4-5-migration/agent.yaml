@@ -5,15 +5,18 @@ metadata:
   name: claude-opus-4-5-migration
   version: 1.0.0
   description: "Migrate your code and prompts from Sonnet 4.x and Opus 4.1 to Opus 4.5."
-  author: claude-code-plugins
+  author: AgentHippo
   license: MIT
   tags:
-    - converted
-    - claude-code-plugin
+    - agenthippo
+    - converted-plugin
+  source:
+    type: claude-code-plugin
+    slug: claude-opus-4-5-migration
 
 spec:
-  engine: claude
-  model: claude-sonnet-4-20250514
+  engine: openclaw
+  model: litellm/gpt-5.3-codex
 
   skills:
     - path: skills/claude-opus-4-5-migration

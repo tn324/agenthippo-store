@@ -1,6 +1,6 @@
 # Source Context
 
-Converted from Claude Code plugin: explanatory-output-style
+Adapted for AgentHippo from upstream plugin source: explanatory-output-style
 
 # Explanatory Output Style Plugin
 

@@ -5,15 +5,18 @@ metadata:
   name: frontend-design
   version: 1.0.0
   description: "Generates distinctive, production-grade frontend interfaces that avoid generic AI aesthetics."
-  author: claude-code-plugins
+  author: AgentHippo
   license: MIT
   tags:
-    - converted
-    - claude-code-plugin
+    - agenthippo
+    - converted-plugin
+  source:
+    type: claude-code-plugin
+    slug: frontend-design
 
 spec:
-  engine: claude
-  model: claude-sonnet-4-20250514
+  engine: openclaw
+  model: litellm/gpt-5.3-codex
 
   skills:
     - path: skills/frontend-design

@@ -5,15 +5,18 @@ metadata:
   name: feature-dev
   version: 1.0.0
   description: "A comprehensive, structured workflow for feature development with specialized agents for codebase exploration, architecture design, and quality review."
-  author: claude-code-plugins
+  author: AgentHippo
   license: MIT
   tags:
-    - converted
-    - claude-code-plugin
+    - agenthippo
+    - converted-plugin
+  source:
+    type: claude-code-plugin
+    slug: feature-dev
 
 spec:
-  engine: claude
-  model: claude-sonnet-4-20250514
+  engine: openclaw
+  model: litellm/gpt-5.3-codex
 
   prompts:
     system: ./AGENTS.md

@@ -1,6 +1,6 @@
 # Source Context
 
-Converted from Claude Code plugin: hookify
+Adapted for AgentHippo from upstream plugin source: hookify
 
 # Hookify Plugin
 

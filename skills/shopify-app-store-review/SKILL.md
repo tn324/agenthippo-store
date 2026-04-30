@@ -3,7 +3,7 @@ name: shopify-app-store-review
 version: 1.1.0
 author: Shopify
 description: "Run a pre-submission compliance check against your Shopify app's codebase. Reviews App Store requirements and surfaces likely issues before you submit for official review."
-compatibility: Claude Code, Claude Desktop, Cursor
+compatibility: AgentHippo
 metadata:
   author: Shopify
   version: "1.1.0"

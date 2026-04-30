@@ -1,13 +1,13 @@
 ---
 name: google-docs
 description: |
-  Google Docs API integration with managed OAuth. Create documents, insert text, apply formatting, and manage content. Use this skill when users want to interact with Google Docs. For other third party apps, use the api-gateway skill (https://clawhub.ai/byungkyu/api-gateway).
+  Google Docs API integration with managed OAuth. Create documents, insert text, apply formatting, and manage content. Use this skill when users want to interact with Google Docs. For other third-party apps, search AgentHippo Store for the matching skill or MCP.
 version: 1.0.5
 compatibility: Requires network access and valid Maton API key
 metadata:
   author: maton
   version: "1.0"
-  clawdbot:
+  agenthippo:
     emoji: 🧠
     requires:
       env:

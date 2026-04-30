@@ -149,10 +149,7 @@ npm start
 
 ## Installation
 
-This plugin is included in the Claude Code repository. To use it:
-
-1. Ensure Claude Code is installed
-2. The plugin commands and agents are automatically available
+This pack is available from AgentHippo Store. Install it with `agenthippo store install pack/agent-sdk-dev`. The pack commands and agents are available after installation
 
 ## Best Practices
 
