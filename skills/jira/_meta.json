@@ -1,0 +1,27 @@
+{
+  "owner": "jdrhyne",
+  "slug": "jira",
+  "displayName": "JIRA",
+  "latest": {
+    "version": "1.3.3",
+    "publishedAt": 1772258566558,
+    "commit": "https://github.com/openclaw/skills/commit/939a8cec0ddf5c9d7260511985b7354017d40d61"
+  },
+  "history": [
+    {
+      "version": "1.2.0",
+      "publishedAt": 1772253040873,
+      "commit": "https://github.com/openclaw/skills/commit/d11d998a0bb07abb40350eb1245884caae594e63"
+    },
+    {
+      "version": "1.1.0",
+      "publishedAt": 1770969689485,
+      "commit": "https://github.com/openclaw/skills/commit/599ffbfa47d4e056fd57fa2f25d1c92ec37fe043"
+    },
+    {
+      "version": "1.0.0",
+      "publishedAt": 1767659435374,
+      "commit": "https://github.com/clawdbot/skills/commit/89c489dd2c0340defb7b0aa89d9f262b78c0826d"
+    }
+  ]
+}
