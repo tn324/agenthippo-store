@@ -1,0 +1,25 @@
+{
+  "name": "discord-webhook",
+  "version": "1.3.1",
+  "description": "Community MCP server for sending messages and embeds to Discord channels through Discord webhooks.",
+  "transport": "stdio",
+  "command": "npx",
+  "args": [
+    "-y",
+    "@lmquang/mcp-discord-webhook@1.3.1"
+  ],
+  "env": {
+    "DISCORD_WEBHOOK_URL": "${env:DISCORD_WEBHOOK_URL}"
+  },
+  "label": "Discord Webhook MCP",
+  "author": "lmquang",
+  "homepage": "https://github.com/lmquang/mcp-discord-webhook#readme",
+  "repository": "https://github.com/lmquang/mcp-discord-webhook",
+  "license": "MIT",
+  "tags": [
+    "discord",
+    "webhook",
+    "chat",
+    "community"
+  ]
+}

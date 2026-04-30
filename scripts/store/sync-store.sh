@@ -17,6 +17,8 @@ CLAUDE_CODE_REPO_URL="${CLAUDE_CODE_REPO_URL:-https://github.com/anthropics/clau
 CLAUDE_CODE_REPO_PATH="${CLAUDE_CODE_REPO_PATH:-$STORE_ROOT/../claude-code}"
 OPENCLAW_SKILLS_REPO_URL="${OPENCLAW_SKILLS_REPO_URL:-https://github.com/openclaw/skills.git}"
 OPENCLAW_SKILLS_REPO_PATH="${OPENCLAW_SKILLS_REPO_PATH:-$STORE_ROOT/../openclaw-skills}"
+SHOPIFY_AI_TOOLKIT_REPO_URL="${SHOPIFY_AI_TOOLKIT_REPO_URL:-https://github.com/Shopify/shopify-ai-toolkit.git}"
+SHOPIFY_AI_TOOLKIT_REPO_PATH="${SHOPIFY_AI_TOOLKIT_REPO_PATH:-$STORE_ROOT/../shopify-ai-toolkit}"
 MCP_REPO_URL="${MCP_REPO_URL:-}"
 MCP_REPO_PATH="${MCP_REPO_PATH:-$STORE_ROOT/../mcp-servers}"
 
@@ -29,9 +31,11 @@ VERIFY_TOP=3
 
 DO_PACKS=0
 DO_SKILLS=0
+DO_SHOPIFY_SKILLS=0
 DO_MCP=0
 PACK_NAMES=()
 SKILL_NAMES=()
+SHOPIFY_SKILL_NAMES=()
 MCP_NAMES=()
 
 usage() {
@@ -43,11 +47,13 @@ Source management:
   --dry-run              Preview conversions/copies without writing
 
 Artifact selection:
-  --all                  Sync packs, skills, and MCP
+  --all                  Sync packs, skills, Shopify skills, and MCP
   --packs                Sync all Claude Code plugin packs
   --pack <name>          Sync one Claude Code plugin pack (repeatable)
-  --skills               Sync all OpenClaw skills
+  --skills               Sync all skill sources
   --skill <name>         Sync one OpenClaw skill (repeatable)
+  --shopify-skills       Sync all Shopify AI Toolkit skills
+  --shopify-skill <name> Sync one Shopify AI Toolkit skill (repeatable)
   --mcp                  Sync all MCP manifests from MCP_REPO_PATH
   --mcp-server <name>    Sync one MCP server (repeatable)
 
@@ -61,6 +67,8 @@ Environment:
   CLAUDE_CODE_REPO_PATH      Default: ../claude-code
   OPENCLAW_SKILLS_REPO_URL   Default: https://github.com/openclaw/skills.git
   OPENCLAW_SKILLS_REPO_PATH  Default: ../openclaw-skills
+  SHOPIFY_AI_TOOLKIT_REPO_URL  Default: https://github.com/Shopify/shopify-ai-toolkit.git
+  SHOPIFY_AI_TOOLKIT_REPO_PATH Default: ../shopify-ai-toolkit
   MCP_REPO_URL               Optional; cloned when MCP_REPO_PATH is absent
   MCP_REPO_PATH              Default: ../mcp-servers
   PACK_VERSION               Default: 1.0.0
@@ -149,6 +157,7 @@ parse_args() {
 			--all)
 				DO_PACKS=1
 				DO_SKILLS=1
+				DO_SHOPIFY_SKILLS=1
 				DO_MCP=1
 				shift
 				;;
@@ -167,6 +176,7 @@ parse_args() {
 				;;
 			--skills)
 				DO_SKILLS=1
+				DO_SHOPIFY_SKILLS=1
 				shift
 				;;
 			--skill)
@@ -176,6 +186,19 @@ parse_args() {
 				fi
 				DO_SKILLS=1
 				SKILL_NAMES+=("$2")
+				shift 2
+				;;
+			--shopify-skills)
+				DO_SHOPIFY_SKILLS=1
+				shift
+				;;
+			--shopify-skill)
+				if [[ $# -lt 2 ]]; then
+					log "ERROR: --shopify-skill requires a name" >&2
+					exit 2
+				fi
+				DO_SHOPIFY_SKILLS=1
+				SHOPIFY_SKILL_NAMES+=("$2")
 				shift 2
 				;;
 			--mcp)
@@ -227,9 +250,10 @@ parse_args() {
 		esac
 	done
 
-	if [[ "$DO_PACKS" == "0" && "$DO_SKILLS" == "0" && "$DO_MCP" == "0" ]]; then
+	if [[ "$DO_PACKS" == "0" && "$DO_SKILLS" == "0" && "$DO_SHOPIFY_SKILLS" == "0" && "$DO_MCP" == "0" ]]; then
 		DO_PACKS=1
 		DO_SKILLS=1
+		DO_SHOPIFY_SKILLS=1
 		DO_MCP=1
 	fi
 }
@@ -324,6 +348,29 @@ sync_skills() {
 	fi
 }
 
+sync_shopify_skills() {
+	ensure_repo "$SHOPIFY_AI_TOOLKIT_REPO_PATH" "$SHOPIFY_AI_TOOLKIT_REPO_URL" "shopify-ai-toolkit"
+
+	if [[ ! -d "$SHOPIFY_AI_TOOLKIT_REPO_PATH/skills" && "$DRY_RUN" == "1" ]]; then
+		log "DRY RUN: Shopify AI Toolkit checkout is not present yet; skipping Shopify skill copy preview."
+		return 0
+	fi
+
+	log ""
+	log "Copying Shopify AI Toolkit skills into store"
+	if [[ ${#SHOPIFY_SKILL_NAMES[@]} -gt 0 ]]; then
+		SHOPIFY_AI_TOOLKIT_REPO_PATH="$SHOPIFY_AI_TOOLKIT_REPO_PATH" \
+			STORE_REPO_PATH="$STORE_ROOT" \
+			DRY_RUN="$DRY_RUN" \
+			"$SCRIPT_DIR/push-shopify-skills-to-store.sh" "${SHOPIFY_SKILL_NAMES[@]}"
+	else
+		SHOPIFY_AI_TOOLKIT_REPO_PATH="$SHOPIFY_AI_TOOLKIT_REPO_PATH" \
+			STORE_REPO_PATH="$STORE_ROOT" \
+			DRY_RUN="$DRY_RUN" \
+			"$SCRIPT_DIR/push-shopify-skills-to-store.sh"
+	fi
+}
+
 sync_mcp() {
 	ensure_repo "$MCP_REPO_PATH" "$MCP_REPO_URL" "mcp"
 
@@ -378,6 +425,9 @@ main() {
 	fi
 	if [[ "$DO_SKILLS" == "1" ]]; then
 		sync_skills
+	fi
+	if [[ "$DO_SHOPIFY_SKILLS" == "1" ]]; then
+		sync_shopify_skills
 	fi
 	if [[ "$DO_MCP" == "1" ]]; then
 		sync_mcp

@@ -1,0 +1,25 @@
+{
+  "name": "aws-api",
+  "version": "1.3.33",
+  "description": "AWS Labs MCP server for interacting with AWS services and resources through AWS CLI command selection, validation, and safety controls.",
+  "transport": "stdio",
+  "command": "uvx",
+  "args": [
+    "awslabs.aws-api-mcp-server@latest"
+  ],
+  "env": {
+    "AWS_REGION": "${env:AWS_REGION}"
+  },
+  "label": "AWS API MCP",
+  "author": "AWS Labs",
+  "homepage": "https://awslabs.github.io/mcp/servers/aws-api-mcp-server/",
+  "repository": "https://github.com/awslabs/mcp",
+  "license": "Apache-2.0",
+  "tags": [
+    "aws",
+    "cloud",
+    "infrastructure",
+    "api",
+    "official"
+  ]
+}

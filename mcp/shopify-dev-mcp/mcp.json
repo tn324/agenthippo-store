@@ -1,0 +1,24 @@
+{
+  "name": "shopify-dev-mcp",
+  "version": "1.13.0",
+  "description": "Official Shopify Dev MCP server for searching Shopify docs, exploring API schemas, building Functions, and getting current Shopify API guidance.",
+  "transport": "stdio",
+  "command": "npx",
+  "args": [
+    "-y",
+    "@shopify/dev-mcp@1.13.0"
+  ],
+  "env": {},
+  "label": "Shopify Dev MCP",
+  "author": "Shopify",
+  "homepage": "https://shopify.dev/docs/apps/build/ai-toolkit",
+  "repository": "https://github.com/Shopify/shopify-ai-toolkit",
+  "license": "ISC",
+  "tags": [
+    "shopify",
+    "commerce",
+    "docs",
+    "graphql",
+    "official"
+  ]
+}

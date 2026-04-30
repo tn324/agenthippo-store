@@ -6,23 +6,27 @@ All AgentHippo store maintenance scripts live here.
 
 - Claude Code plugins and embedded skills: `../claude-code` by default, cloned from `https://github.com/anthropics/claude-code.git` when missing.
 - OpenClaw skills: `../openclaw-skills` by default, cloned from `https://github.com/openclaw/skills.git` when missing.
+- Shopify AI Toolkit skills: `../shopify-ai-toolkit` by default, cloned from `https://github.com/Shopify/shopify-ai-toolkit.git` when missing.
 - MCP servers: optional. Set `MCP_REPO_PATH` or `MCP_REPO_URL`.
 
 ## Main Workflow
 
 ```bash
-# Sync packs, Claude Code skills, OpenClaw skills, and MCP, then rebuild the local index.
+# Sync packs, Claude Code skills, OpenClaw skills, Shopify skills, and MCP, then rebuild the local index.
 MCP_REPO_PATH=../agenthippo-vscode/extensions/agentide/base-prompts/mcp-servers \
   scripts/store/sync-store.sh --all --verify-installs --top 3
 
 # Sync one Claude Code plugin as an AgentHippo pack.
 scripts/store/sync-store.sh --pack plugin-dev
 
-# Sync all standalone skills from Claude Code plugins and OpenClaw.
+# Sync all standalone skills from Claude Code plugins, OpenClaw, and Shopify AI Toolkit.
 scripts/store/sync-store.sh --skills
 
 # Sync one OpenClaw skill by name.
 scripts/store/sync-store.sh --skill canvas
+
+# Sync one Shopify AI Toolkit skill by name.
+scripts/store/sync-store.sh --shopify-skill shopify-admin
 
 # Sync MCP artifacts from a configured MCP source.
 MCP_REPO_PATH=../mcp-servers scripts/store/sync-store.sh --mcp
@@ -40,6 +44,7 @@ scripts/store/sync-store.sh --all --dry-run
 | `push-packs-to-store.sh` | Copy staged converted packs into `agent-packs/`. |
 | `push-claude-plugin-skills-to-store.sh` | Copy skills embedded in Claude Code plugins into `skills/`. |
 | `push-skills-to-store.sh` | Copy OpenClaw skills into `skills/`. |
+| `push-shopify-skills-to-store.sh` | Copy Shopify AI Toolkit skills into `skills/`. |
 | `push-mcp-to-store.sh` | Copy or split MCP manifests into `mcp/`. |
 | `verify-converted-packs.sh` | Validate staged converted packs before pushing them into the store. |
 | `verify-store-installs.sh` | Use `agenthippo store search/install` to install and verify top artifacts by type. |
@@ -51,6 +56,7 @@ scripts/store/sync-store.sh --all --dry-run
 ```bash
 export CLAUDE_CODE_REPO_PATH=../claude-code
 export OPENCLAW_SKILLS_REPO_PATH=../openclaw-skills
+export SHOPIFY_AI_TOOLKIT_REPO_PATH=../shopify-ai-toolkit
 export MCP_REPO_PATH=../mcp-servers
 export STORE_REPO_PATH=/path/to/agenthippo-store
 export PACK_VERSION=1.0.0

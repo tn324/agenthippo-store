@@ -1,0 +1,28 @@
+{
+  "name": "salesforce-dx",
+  "version": "0.30.7",
+  "description": "Official Salesforce DX MCP server for interacting with Salesforce orgs, metadata, CRM data, and users through Salesforce CLI-backed tools.",
+  "transport": "stdio",
+  "command": "npx",
+  "args": [
+    "-y",
+    "@salesforce/mcp@0.30.7",
+    "--orgs",
+    "DEFAULT_TARGET_ORG",
+    "--toolsets",
+    "orgs,metadata,data,users"
+  ],
+  "env": {},
+  "label": "Salesforce DX MCP",
+  "author": "Salesforce",
+  "homepage": "https://github.com/salesforcecli/mcp",
+  "repository": "https://github.com/salesforcecli/mcp",
+  "license": "Apache-2.0",
+  "tags": [
+    "salesforce",
+    "crm",
+    "dx",
+    "data",
+    "official"
+  ]
+}
