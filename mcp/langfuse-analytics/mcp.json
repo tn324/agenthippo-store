@@ -1,0 +1,16 @@
+{
+  "name": "langfuse-analytics",
+  "version": "1.0.0",
+  "description": "Query session costs, latencies, and error patterns from Langfuse",
+  "transport": "stdio",
+  "command": "node",
+  "args": [
+    "${serverDir}/dist/index.js"
+  ],
+  "env": {
+    "LANGFUSE_BASE_URL": "${env:LANGFUSE_BASE_URL}",
+    "LANGFUSE_SECRET_KEY": "${env:LANGFUSE_SECRET_KEY}",
+    "LANGFUSE_PUBLIC_KEY": "${env:LANGFUSE_PUBLIC_KEY}"
+  },
+  "label": "Langfuse Analytics"
+}

@@ -1,0 +1,23 @@
+{
+  "name": "langfuse-analytics-mcp",
+  "version": "1.0.0",
+  "description": "MCP server for querying Langfuse analytics (costs, latencies, errors)",
+  "type": "module",
+  "main": "dist/index.js",
+  "scripts": {
+    "build": "tsc",
+    "dev": "tsc --watch",
+    "start": "node dist/index.js",
+    "test": "node scripts/test-server.js"
+  },
+  "dependencies": {
+    "@modelcontextprotocol/sdk": "^1.0.0",
+    "langfuse": "^3.0.0",
+    "zod": "^3.23.0"
+  },
+  "devDependencies": {
+    "@types/node": "^20.0.0",
+    "typescript": "^5.4.0"
+  }
+}
+

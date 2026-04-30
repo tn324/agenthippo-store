@@ -1,0 +1,31 @@
+apiVersion: agenthippo.ai/v1
+kind: Agent
+
+metadata:
+  name: feature-dev
+  version: 1.0.0
+  description: "A comprehensive, structured workflow for feature development with specialized agents for codebase exploration, architecture design, and quality review."
+  author: claude-code-plugins
+  license: MIT
+  tags:
+    - converted
+    - claude-code-plugin
+
+spec:
+  engine: claude
+  model: claude-sonnet-4-20250514
+
+  prompts:
+    system: ./AGENTS.md
+    rules:
+      - ./rules/code-architect.md
+      - ./rules/code-explorer.md
+      - ./rules/code-reviewer.md
+      - ./rules/commands/feature-dev.md
+
+  permissions:
+    approval: unrestricted
+    fileAccess: full
+
+  visibility: public
+

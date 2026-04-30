@@ -1,0 +1,34 @@
+apiVersion: agenthippo.ai/v1
+kind: Agent
+
+metadata:
+  name: pr-review-toolkit
+  version: 1.0.0
+  description: "A comprehensive collection of specialized agents for thorough pull request review, covering code comments, test coverage, error handling, type design, code quality, and code simplification."
+  author: claude-code-plugins
+  license: MIT
+  tags:
+    - converted
+    - claude-code-plugin
+
+spec:
+  engine: claude
+  model: claude-sonnet-4-20250514
+
+  prompts:
+    system: ./AGENTS.md
+    rules:
+      - ./rules/code-reviewer.md
+      - ./rules/code-simplifier.md
+      - ./rules/comment-analyzer.md
+      - ./rules/pr-test-analyzer.md
+      - ./rules/silent-failure-hunter.md
+      - ./rules/type-design-analyzer.md
+      - ./rules/commands/review-pr.md
+
+  permissions:
+    approval: unrestricted
+    fileAccess: full
+
+  visibility: public
+

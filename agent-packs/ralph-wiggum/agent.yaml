@@ -1,0 +1,30 @@
+apiVersion: agenthippo.ai/v1
+kind: Agent
+
+metadata:
+  name: ralph-wiggum
+  version: 1.0.0
+  description: "Implementation of the Ralph Wiggum technique for iterative, self-referential AI development loops in Claude Code."
+  author: claude-code-plugins
+  license: MIT
+  tags:
+    - converted
+    - claude-code-plugin
+
+spec:
+  engine: claude
+  model: claude-sonnet-4-20250514
+
+  prompts:
+    system: ./AGENTS.md
+    rules:
+      - ./rules/commands/cancel-ralph.md
+      - ./rules/commands/help.md
+      - ./rules/commands/ralph-loop.md
+
+  permissions:
+    approval: unrestricted
+    fileAccess: full
+
+  visibility: public
+

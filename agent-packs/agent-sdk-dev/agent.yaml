@@ -1,0 +1,30 @@
+apiVersion: agenthippo.ai/v1
+kind: Agent
+
+metadata:
+  name: agent-sdk-dev
+  version: 1.0.0
+  description: "A comprehensive plugin for creating and verifying Claude Agent SDK applications in Python and TypeScript."
+  author: claude-code-plugins
+  license: MIT
+  tags:
+    - converted
+    - claude-code-plugin
+
+spec:
+  engine: claude
+  model: claude-sonnet-4-20250514
+
+  prompts:
+    system: ./AGENTS.md
+    rules:
+      - ./rules/agent-sdk-verifier-py.md
+      - ./rules/agent-sdk-verifier-ts.md
+      - ./rules/commands/new-sdk-app.md
+
+  permissions:
+    approval: unrestricted
+    fileAccess: full
+
+  visibility: public
+
