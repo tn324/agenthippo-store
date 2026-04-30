@@ -1,0 +1,25 @@
+{
+  "version": 2,
+  "id": "gemini",
+  "displayName": "Gemini",
+  "description": "Google Gemini SDK agent engine (https://github.com/google-gemini/gemini-cli)",
+  "entry": "./engine.mjs",
+  "engineExport": "GeminiSdkEngine",
+  "homeEnvVar": "GEMINI_CLI_HOME",
+  "workspaceSync": {
+    "enabled": true,
+    "dir": ".gemini",
+    "rulesFile": "GEMINI.md",
+    "includeSkills": true,
+    "includeRules": true
+  },
+  "promptInjection": {
+    "mode": "message-suffix"
+  },
+  "model": {
+    "defaultModel": "gemini-2.5-flash",
+    "apiKeyEnvVar": "GEMINI_API_KEY",
+    "baseUrlEnvVar": "GOOGLE_GEMINI_BASE_URL"
+  }
+}
+

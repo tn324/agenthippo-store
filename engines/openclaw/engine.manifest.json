@@ -1,0 +1,25 @@
+{
+  "version": 2,
+  "id": "openclaw",
+  "displayName": "OpenClaw",
+  "description": "OpenClaw/HippoClaw CLI agent engine via Agent Anywhere install",
+  "entry": "./engine.mjs",
+  "engineExport": "OpenClawCliEngine",
+  "homeEnvVar": "OPENCLAW_STATE_DIR",
+  "workspaceSync": {
+    "enabled": true,
+    "dir": ".openclaw",
+    "rulesFile": "OPENCLAW.md",
+    "includeSkills": true,
+    "includeRules": true
+  },
+  "promptInjection": {
+    "mode": "message-suffix"
+  },
+  "model": {
+    "defaultModel": "litellm/gpt-5.3-codex",
+    "apiKeyEnvVar": "LITELLM_API_KEY",
+    "baseUrlEnvVar": "AGENTHIPPO_LITELLM_BASE_URL",
+    "openaiBaseUrlEnvVar": "AGENTHIPPO_OPENAI_BASE_URL"
+  }
+}

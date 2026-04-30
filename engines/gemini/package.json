@@ -1,0 +1,5 @@
+{
+  "dependencies": {
+    "@google/gemini-cli-core": "^0.40.0"
+  }
+}
