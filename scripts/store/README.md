@@ -12,7 +12,7 @@ All AgentHippo store maintenance scripts live here.
 ## Main Workflow
 
 ```bash
-# Sync packs, Claude Code skills, OpenClaw skills, Shopify skills, and MCP, then rebuild the local index.
+# Sync packs, Claude Code skills, OpenClaw skills, Shopify skills, and MCP, then rebuild and lint the local index.
 MCP_REPO_PATH=../agenthippo-vscode/extensions/agentide/base-prompts/mcp-servers \
   scripts/store/sync-store.sh --all --verify-installs --top 3
 
@@ -33,6 +33,9 @@ MCP_REPO_PATH=../mcp-servers scripts/store/sync-store.sh --mcp
 
 # Preview without changing files.
 scripts/store/sync-store.sh --all --dry-run
+
+# Skip readiness lint only for local experiments.
+scripts/store/sync-store.sh --all --no-lint-readiness
 ```
 
 ## Per-Type Scripts
@@ -46,6 +49,7 @@ scripts/store/sync-store.sh --all --dry-run
 | `push-skills-to-store.sh` | Copy OpenClaw skills into `skills/`. |
 | `push-shopify-skills-to-store.sh` | Copy Shopify AI Toolkit skills into `skills/`. |
 | `push-mcp-to-store.sh` | Copy or split MCP manifests into `mcp/`. |
+| `lint-store-readiness.ts` | Check listed public artifacts for upstream runtime/install wording before announcements. |
 | `verify-converted-packs.sh` | Validate staged converted packs before pushing them into the store. |
 | `verify-store-installs.sh` | Use `agenthippo store search/install` to install and verify top artifacts by type. |
 
@@ -68,6 +72,9 @@ export DRY_RUN=1
 ```bash
 # Install the first 3 search results from each category with the AgentHippo CLI.
 scripts/store/verify-store-installs.sh --top 3
+
+# Check that listed artifacts do not point users back to upstream runtimes.
+bun run scripts/store/lint-store-readiness.ts
 
 # Allow stores with fewer than 3 entries in a category, useful while MCP is empty.
 scripts/store/verify-store-installs.sh --top 3 --allow-missing

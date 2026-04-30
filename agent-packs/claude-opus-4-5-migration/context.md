@@ -1,6 +1,6 @@
 # Source Context
 
-Converted from Claude Code plugin: claude-opus-4-5-migration
+Adapted for AgentHippo from upstream plugin source: claude-opus-4-5-migration
 
 # Claude Opus 4.5 Migration Plugin
 

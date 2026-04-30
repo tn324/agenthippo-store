@@ -6,7 +6,7 @@ version: 1.0.2
 homepage: https://clawic.com/skills/aws
 description: Architect, deploy, and optimize AWS infrastructure avoiding cost explosions and security pitfalls.
 changelog: Complete rewrite with cost traps, security hardening, service selection
-metadata: {"clawdbot":{"emoji":"☁️","requires":{"bins":["aws"]},"install":[{"id":"brew","kind":"brew","formula":"awscli","bins":["aws"],"label":"Install AWS CLI (Homebrew)"}],"os":["linux","darwin","win32"]}}
+metadata: {"agenthippo":{"emoji":"☁️","requires":{"bins":["aws"]},"install":[{"id":"brew","kind":"brew","formula":"awscli","bins":["aws"],"label":"Install AWS CLI (Homebrew)"}],"os":["linux","darwin","win32"]}}
 ---
 
 ## Setup
@@ -201,7 +201,7 @@ aws ce get-cost-forecast --time-period Start=$(date +%Y-%m-01),End=$(date -v+1m 
 **CLI commands:** All commands shown are read-only by default. Destructive operations (delete, terminate) require explicit user confirmation.
 
 ## Related Skills
-Install with `clawhub install <slug>` if user confirms:
+Search AgentHippo Store for related skills if the user confirms:
 - `infrastructure` — architecture decisions
 - `cloud` — multi-cloud patterns
 - `docker` — container basics
@@ -209,5 +209,5 @@ Install with `clawhub install <slug>` if user confirms:
 
 ## Feedback
 
-- If useful: `clawhub star aws`
-- Stay updated: `clawhub sync`
+- If useful, keep the installed AgentHippo Store slug handy for future use.
+- Stay updated with the current AgentHippo Store catalog.

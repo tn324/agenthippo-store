@@ -5,15 +5,18 @@ metadata:
   name: commit-commands
   version: 1.0.0
   description: "Streamline your git workflow with simple commands for committing, pushing, and creating pull requests."
-  author: claude-code-plugins
+  author: AgentHippo
   license: MIT
   tags:
-    - converted
-    - claude-code-plugin
+    - agenthippo
+    - converted-plugin
+  source:
+    type: claude-code-plugin
+    slug: commit-commands
 
 spec:
-  engine: claude
-  model: claude-sonnet-4-20250514
+  engine: openclaw
+  model: litellm/gpt-5.3-codex
 
   prompts:
     system: ./AGENTS.md

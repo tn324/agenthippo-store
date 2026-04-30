@@ -43,9 +43,26 @@ jobs:
             fi
           }
 
+          is_unlisted() {
+            local manifest="$1"
+            case "$manifest" in
+              *"mcp.json")
+                grep -Eq '"listed"[[:space:]]*:[[:space:]]*false' "$manifest"
+                ;;
+              *)
+                grep -Eq '^[[:space:]]*listed:[[:space:]]*false[[:space:]]*$' "$manifest"
+                ;;
+            esac
+          }
+
           # Find all mcp.json, agent.yaml, and SKILL.md files
           for manifest in $(find . -name "mcp.json" -o -name "agent.yaml" -o -name "SKILL.md" | grep -v node_modules); do
             dir=$(dirname "$manifest")
+
+            if is_unlisted "$manifest"; then
+              echo "⏭️  Skipping unlisted artifact: $manifest"
+              continue
+            fi
 
             # Determine artifact type and extract version
             if [[ "$manifest" == *"agent.yaml" ]]; then

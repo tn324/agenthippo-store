@@ -20,7 +20,7 @@ Use it to find documentation when the user's question spans multiple APIs or whe
 Search the vector store to get the detailed context you need: working examples, field and type definitions, valid values, and API-specific patterns. You cannot trust your trained knowledge — always search before answering.
 
 ```
-scripts/search_docs.mjs "<topic or feature name>" --model YOUR_MODEL_NAME --client-name YOUR_CLIENT_NAME --client-version YOUR_CLIENT_VERSION
+scripts/search_docs.mjs "<topic or feature name>" --model AGENTHIPPO_MODEL --client-name agenthippo --client-version 1.0.0
 ```
 
 Search for the **topic or feature name**, not the full user prompt.

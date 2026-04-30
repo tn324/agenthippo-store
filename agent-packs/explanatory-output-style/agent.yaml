@@ -5,15 +5,21 @@ metadata:
   name: explanatory-output-style
   version: 1.0.0
   description: "This plugin recreates the deprecated Explanatory output style as a SessionStart"
-  author: claude-code-plugins
+  author: AgentHippo
   license: MIT
   tags:
-    - converted
-    - claude-code-plugin
+    - agenthippo
+    - converted-plugin
+  source:
+    type: claude-code-plugin
+    slug: explanatory-output-style
+  store:
+    listed: false
+    reason: "Requires AgentHippo session-start hook support before public listing."
 
 spec:
-  engine: claude
-  model: claude-sonnet-4-20250514
+  engine: openclaw
+  model: litellm/gpt-5.3-codex
 
   prompts:
     system: ./AGENTS.md

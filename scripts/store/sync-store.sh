@@ -26,6 +26,7 @@ PACK_VERSION="${PACK_VERSION:-1.0.0}"
 DRY_RUN="${DRY_RUN:-0}"
 PULL_SOURCES=1
 BUILD_INDEX=1
+LINT_READINESS=1
 VERIFY_INSTALLS=0
 VERIFY_TOP=3
 
@@ -61,6 +62,7 @@ Verification:
   --verify-installs      Use agenthippo CLI to install top artifacts after sync
   --top <n>              Number of artifacts per type to install (default: 3)
   --no-build             Skip bun run scripts/build-index.ts
+  --no-lint-readiness    Skip public store readiness lint
 
 Environment:
   CLAUDE_CODE_REPO_URL       Default: https://github.com/anthropics/claude-code.git
@@ -238,6 +240,10 @@ parse_args() {
 				BUILD_INDEX=0
 				shift
 				;;
+			--no-lint-readiness)
+				LINT_READINESS=0
+				shift
+				;;
 			-h|--help)
 				usage
 				exit 0
@@ -413,6 +419,15 @@ verify_installs() {
 	"$SCRIPT_DIR/verify-store-installs.sh" --top "$VERIFY_TOP" --allow-missing
 }
 
+lint_readiness() {
+	if [[ "$LINT_READINESS" != "1" || "$DRY_RUN" == "1" ]]; then
+		return 0
+	fi
+	log ""
+	log "Linting store readiness"
+	( cd "$STORE_ROOT" && bun run store:lint-readiness )
+}
+
 main() {
 	parse_args "$@"
 
@@ -434,6 +449,7 @@ main() {
 	fi
 
 	build_index
+	lint_readiness
 	verify_installs
 
 	log ""

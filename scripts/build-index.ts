@@ -45,12 +45,18 @@ interface StoreArtifact {
 	updatedAt: string;
 }
 
+interface StoreListing {
+	listed?: boolean;
+	reason?: string;
+}
+
 interface SkillFrontmatter {
 	name?: string;
 	description?: string;
 	version?: string;
 	author?: string;
 	tags?: string[];
+	store?: StoreListing;
 }
 
 interface PackManifest {
@@ -62,6 +68,10 @@ interface PackManifest {
 		description?: string;
 		author?: string;
 		tags?: string[];
+		store?: StoreListing;
+	};
+	spec?: {
+		visibility?: string;
 	};
 }
 
@@ -71,6 +81,7 @@ interface McpManifest {
 	description?: string;
 	author?: string;
 	tags?: string[];
+	store?: StoreListing;
 }
 
 interface EngineManifest {
@@ -127,6 +138,10 @@ async function parseSkill(skillDir: string): Promise<StoreArtifact | null> {
 	try {
 		const content = await readFile(skillMdPath, 'utf8');
 		const frontmatter = parseFrontmatter(content) as SkillFrontmatter;
+		if (frontmatter.store?.listed === false) {
+			console.log(`   ○ ${slug} (unlisted)`);
+			return null;
+		}
 		const stats = await stat(skillMdPath);
 
 		return {
@@ -156,6 +171,10 @@ async function parsePack(packDir: string): Promise<StoreArtifact | null> {
 	try {
 		const content = await readFile(manifestPath, 'utf8');
 		const manifest = parseYaml(content) as PackManifest;
+		if (manifest.metadata?.store?.listed === false || manifest.spec?.visibility !== 'public') {
+			console.log(`   ○ ${slug} (unlisted)`);
+			return null;
+		}
 		const stats = await stat(manifestPath);
 
 		return {
@@ -185,6 +204,10 @@ async function parseMcp(mcpDir: string): Promise<StoreArtifact | null> {
 	try {
 		const content = await readFile(manifestPath, 'utf8');
 		const manifest = JSON.parse(content) as McpManifest;
+		if (manifest.store?.listed === false) {
+			console.log(`   ○ ${slug} (unlisted)`);
+			return null;
+		}
 		const stats = await stat(manifestPath);
 
 		return {
@@ -346,4 +369,3 @@ buildIndex().catch((e) => {
 	console.error('Build failed:', e);
 	process.exit(1);
 });
-

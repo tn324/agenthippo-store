@@ -1,13 +1,13 @@
 ---
 name: gmail
 description: |
-  Gmail API integration with managed OAuth. Read, send, and manage emails, threads, labels, and drafts. Use this skill when users want to interact with Gmail. For other third party apps, use the api-gateway skill (https://clawhub.ai/byungkyu/api-gateway).
+  Gmail API integration with managed OAuth. Read, send, and manage emails, threads, labels, and drafts. Use this skill when users want to interact with Gmail. For other third-party apps, search AgentHippo Store for the matching skill or MCP.
 version: 1.0.6
 compatibility: Requires network access and valid Maton API key
 metadata:
   author: maton
   version: "1.0"
-  clawdbot:
+  agenthippo:
     emoji: 🧠
     requires:
       env:

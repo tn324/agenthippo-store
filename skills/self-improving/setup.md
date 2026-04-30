@@ -99,7 +99,7 @@ Only install it after the user explicitly agrees.
 
 If the user agrees:
 
-1. Run `clawhub install proactivity`
+1. Search AgentHippo Store for `proactivity` and install it if available
 2. Read the installed `proactivity` skill
 3. Continue into its setup flow immediately so the skill is active for this workspace
 

@@ -27,6 +27,8 @@ type ParsedArgs = {
 	pluginDir: string;
 	outputDir: string;
 	version: string;
+	engine: string;
+	model: string;
 	dryRun: boolean;
 	flat: boolean;
 };
@@ -40,18 +42,20 @@ type RuleRef = {
 	path: string;
 };
 
-function usage(): never {
+function usage(exitCode = 2): never {
 	console.error(`Usage: convert-plugin-to-pack.ts [options] <plugin-dir> <output-dir>
 
 Options:
   --plugin <path>     Claude Code plugin directory
   --output <path>     Output root directory
   --version <semver>  Pack version (default: PACK_VERSION or 1.0.0)
+  --engine <id>       AgentHippo engine id (default: PACK_ENGINE or openclaw)
+  --model <id>        Agent model id (default: PACK_MODEL or litellm/gpt-5.3-codex)
   --flat              Write directly to <output>/<slug> instead of versioned output
   --dry-run           Print planned conversion without writing files
   -h, --help          Show this help
 `);
-	process.exit(2);
+	process.exit(exitCode);
 }
 
 function parseArgs(argv: string[]): ParsedArgs {
@@ -59,6 +63,8 @@ function parseArgs(argv: string[]): ParsedArgs {
 	let pluginDir = '';
 	let outputDir = '';
 	let version = process.env.PACK_VERSION || '1.0.0';
+	let engine = process.env.PACK_ENGINE || 'openclaw';
+	let model = process.env.PACK_MODEL || 'litellm/gpt-5.3-codex';
 	let dryRun = process.env.DRY_RUN === '1';
 	let flat = process.env.FLAT_OUTPUT === '1';
 
@@ -74,6 +80,12 @@ function parseArgs(argv: string[]): ParsedArgs {
 			case '--version':
 				version = argv[++i] || '';
 				break;
+			case '--engine':
+				engine = argv[++i] || '';
+				break;
+			case '--model':
+				model = argv[++i] || '';
+				break;
 			case '--flat':
 				flat = true;
 				break;
@@ -82,7 +94,7 @@ function parseArgs(argv: string[]): ParsedArgs {
 				break;
 			case '-h':
 			case '--help':
-				usage();
+				usage(0);
 				break;
 			default:
 				if (arg.startsWith('-')) {
@@ -96,11 +108,11 @@ function parseArgs(argv: string[]): ParsedArgs {
 	pluginDir ||= positional[0] || '';
 	outputDir ||= positional[1] || '';
 
-	if (!pluginDir || !outputDir || !version) {
+	if (!pluginDir || !outputDir || !version || !engine || !model) {
 		usage();
 	}
 
-	return { pluginDir, outputDir, version, dryRun, flat };
+	return { pluginDir, outputDir, version, engine, model, dryRun, flat };
 }
 
 function slugify(value: string): string {
@@ -144,6 +156,24 @@ function firstParagraph(markdown: string, fallback: string): string {
 	}
 
 	return fallback;
+}
+
+function adaptPublicCopy(markdown: string): string {
+	return markdown
+		.replace(/Claude automatically uses this skill/g, 'AgentHippo can use this skill')
+		.replace(/Claude will/g, 'The agent will')
+		.replace(/Claude may/g, 'The agent may')
+		.replace(/Ask Claude to/g, 'Ask the agent to')
+		.replace(/Let Claude/g, 'Let AgentHippo')
+		.replace(/Claude reads/g, 'The agent reads')
+		.replace(/Claude Code attribution/g, 'AgentHippo attribution')
+		.replace(/Claude Code installed/g, 'AgentHippo installed')
+		.replace(/Remember: Claude is capable/g, 'Remember: the agent is capable')
+		.replace(/next Claude/g, 'next agent')
+		.replace(/claude\.ai artifacts/g, 'AgentHippo artifacts')
+		.replace(/In claude\.ai/g, 'In AgentHippo')
+		.replace(/Anthropic branding/g, 'AgentHippo gallery styling')
+		.replace(/Anthropic colors\/fonts/g, 'AgentHippo-neutral colors/fonts');
 }
 
 function copyFileOrDir(src: string, dst: string): void {
@@ -195,6 +225,8 @@ function buildManifest(params: {
 	skills: SkillRef[];
 	rules: RuleRef[];
 	hasMcp: boolean;
+	engine: string;
+	model: string;
 }): string {
 	const lines: string[] = [
 		'apiVersion: agenthippo.ai/v1',
@@ -204,15 +236,18 @@ function buildManifest(params: {
 		`  name: ${params.slug}`,
 		`  version: ${params.version}`,
 		`  description: ${yamlString(params.description)}`,
-		'  author: claude-code-plugins',
+		'  author: AgentHippo',
 		'  license: MIT',
 		'  tags:',
-		'    - converted',
-		'    - claude-code-plugin',
+		'    - agenthippo',
+		'    - converted-plugin',
+		'  source:',
+		'    type: claude-code-plugin',
+		`    slug: ${params.slug}`,
 		'',
 		'spec:',
-		'  engine: claude',
-		'  model: claude-sonnet-4-20250514',
+		`  engine: ${params.engine}`,
+		`  model: ${params.model}`,
 	];
 
 	if (params.skills.length > 0) {
@@ -254,14 +289,16 @@ function writeAgentsMd(pluginDir: string, packDir: string, displayName: string, 
 	const body = readme
 		? readme.replace(/^#\s+.+\r?\n?/, '').trim()
 		: `You are a specialized assistant powered by the ${slug} agent pack.`;
+	const adaptedBody = adaptPublicCopy(body);
+	const adaptedReadme = readme ? adaptPublicCopy(readme) : adaptedBody;
 
 	writeFileSync(
 		join(packDir, 'AGENTS.md'),
-		`# ${displayName} Agent\n\n${body}\n`,
+		`# ${displayName} Agent\n\n${adaptedBody}\n`,
 	);
 	writeFileSync(
 		join(packDir, 'context.md'),
-		`# Source Context\n\nConverted from Claude Code plugin: ${slug}\n\n${readme || body}\n`,
+		`# Source Context\n\nAdapted for AgentHippo from upstream plugin source: ${slug}\n\n${adaptedReadme}\n`,
 	);
 }
 
@@ -274,7 +311,7 @@ function convertPluginToPack(args: ParsedArgs): void {
 	const slug = slugify(basename(pluginDir));
 	const readme = readIfExists(join(pluginDir, 'README.md'));
 	const displayName = firstHeading(readme, slug);
-	const description = firstParagraph(readme, `Converted from Claude Code plugin: ${slug}`);
+	const description = adaptPublicCopy(firstParagraph(readme, `Converted from Claude Code plugin: ${slug}`));
 	const packRoot = join(args.outputDir, slug);
 	const packDir = args.flat ? packRoot : join(packRoot, args.version);
 
@@ -282,6 +319,8 @@ function convertPluginToPack(args: ParsedArgs): void {
 	console.log(`  Source: ${pluginDir}`);
 	console.log(`  Output: ${packDir}`);
 	console.log(`  Version: ${args.version}`);
+	console.log(`  Engine: ${args.engine}`);
+	console.log(`  Model: ${args.model}`);
 
 	if (args.dryRun) {
 		return;
@@ -351,6 +390,8 @@ function convertPluginToPack(args: ParsedArgs): void {
 			skills: skillRefs,
 			rules,
 			hasMcp,
+			engine: args.engine,
+			model: args.model,
 		}),
 	);
 

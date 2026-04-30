@@ -1,6 +1,6 @@
 # Source Context
 
-Converted from Claude Code plugin: plugin-dev
+Adapted for AgentHippo from upstream plugin source: plugin-dev
 
 # Plugin Development Toolkit
 

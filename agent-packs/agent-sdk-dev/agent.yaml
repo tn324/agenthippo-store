@@ -5,15 +5,18 @@ metadata:
   name: agent-sdk-dev
   version: 1.0.0
   description: "A comprehensive plugin for creating and verifying Claude Agent SDK applications in Python and TypeScript."
-  author: claude-code-plugins
+  author: AgentHippo
   license: MIT
   tags:
-    - converted
-    - claude-code-plugin
+    - agenthippo
+    - converted-plugin
+  source:
+    type: claude-code-plugin
+    slug: agent-sdk-dev
 
 spec:
-  engine: claude
-  model: claude-sonnet-4-20250514
+  engine: openclaw
+  model: litellm/gpt-5.3-codex
 
   prompts:
     system: ./AGENTS.md

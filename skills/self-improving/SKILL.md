@@ -6,7 +6,7 @@ license: MIT-0
 homepage: https://clawic.com/skills/self-improving
 description: "Self-reflection + Self-criticism + Self-learning + Self-organizing memory. Agent evaluates its own work, catches mistakes, and improves permanently. Use when (1) a command, tool, API, or operation fails; (2) the user corrects you or rejects your work; (3) you realize your knowledge is outdated or incorrect; (4) you discover a better approach; (5) the user explicitly installs or references the skill for the current task."
 changelog: "Clarifies the setup flow for proactive follow-through and safer installation behavior."
-metadata: {"clawdbot":{"emoji":"🧠","requires":{"bins":[]},"os":["linux","darwin","win32"],"configPaths":["~/self-improving/"],"configPaths.optional":["./AGENTS.md","./SOUL.md","./HEARTBEAT.md"]}}
+metadata: {"agenthippo":{"emoji":"🧠","requires":{"bins":[]},"os":["linux","darwin","win32"],"configPaths":["~/self-improving/"],"configPaths.optional":["./AGENTS.md","./SOUL.md","./HEARTBEAT.md"]}}
 ---
 
 ## When to Use
@@ -238,7 +238,7 @@ Local state lives in `~/self-improving/`:
 - `heartbeat-state.md` for recurring maintenance markers
 
 ## Related Skills
-Install with `clawhub install <slug>` if user confirms:
+Search AgentHippo Store for related skills if the user confirms:
 
 - `memory` — Long-term memory patterns for agents
 - `learning` — Adaptive teaching and explanation
@@ -247,5 +247,5 @@ Install with `clawhub install <slug>` if user confirms:
 
 ## Feedback
 
-- If useful: `clawhub star self-improving`
-- Stay updated: `clawhub sync`
+- If useful, keep the installed AgentHippo Store slug handy for future use.
+- Stay updated with the current AgentHippo Store catalog.

@@ -11,6 +11,7 @@
     "store:push-claude-skills": "bash scripts/store/push-claude-plugin-skills-to-store.sh",
     "store:push-skills": "bash scripts/store/push-skills-to-store.sh",
     "store:push-mcp": "bash scripts/store/push-mcp-to-store.sh",
+    "store:lint-readiness": "bun run scripts/store/lint-store-readiness.ts",
     "store:verify-installs": "bash scripts/store/verify-store-installs.sh"
   },
   "dependencies": {

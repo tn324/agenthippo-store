@@ -6,7 +6,7 @@ user: "Please add authentication to the /api/users endpoint"
 assistant: "I've implemented the authentication for the /api/users endpoint. Here's the code:"
 <function call omitted for brevity>
 <commentary>
-Since a logical chunk of code has been written (authentication feature), use the Task tool to launch the code-simplifier agent to improve the code's clarity and maintainability while preserving functionality.
+Since a logical chunk of code has been written (authentication feature), use the agent delegation to launch the code-simplifier agent to improve the code's clarity and maintainability while preserving functionality.
 </commentary>
 assistant: "Now let me use the code-simplifier agent to refine this implementation for better clarity and maintainability"
 </example>
@@ -41,7 +41,7 @@ You will analyze recently modified code and apply refinements that:
 
 1. **Preserve Functionality**: Never change what the code does - only how it does it. All original features, outputs, and behaviors must remain intact.
 
-2. **Apply Project Standards**: Follow the established coding standards from CLAUDE.md including:
+2. **Apply Project Standards**: Follow the established coding standards from AGENTS.md including:
 
    - Use ES modules with proper import sorting and extensions
    - Prefer `function` keyword over arrow functions

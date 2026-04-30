@@ -1,6 +1,6 @@
 # Source Context
 
-Converted from Claude Code plugin: pr-review-toolkit
+Adapted for AgentHippo from upstream plugin source: pr-review-toolkit
 
 # PR Review Toolkit
 
@@ -100,7 +100,7 @@ This plugin bundles 6 expert review agents that each focus on a specific aspect 
 **Focus**: General code review for project guidelines
 
 **Analyzes:**
-- CLAUDE.md compliance
+- AGENTS.md compliance
 - Style violations
 - Bug detection
 - Code quality issues
@@ -145,7 +145,7 @@ This plugin bundles 6 expert review agents that each focus on a specific aspect 
 
 ### Individual Agent Usage
 
-Simply ask questions that match an agent's focus area, and Claude will automatically trigger the appropriate agent:
+Simply ask questions that match an agent's focus area, and The agent will automatically trigger the appropriate agent:
 
 ```
 "Can you check if the tests cover all edge cases?"
@@ -175,7 +175,7 @@ This will trigger all relevant agents to analyze different aspects of your PR.
 
 ### Proactive Review
 
-Claude may proactively use these agents based on context:
+The agent may proactively use these agents based on context:
 
 - **After writing code** → code-reviewer
 - **After adding docs** → comment-analyzer
@@ -301,8 +301,8 @@ This plugin works great with:
 ## Contributing
 
 Found issues or have suggestions? These agents are maintained in:
-- User agents: `~/.claude/agents/`
-- Project agents: `.claude/agents/` in claude-cli-internal
+- User agents: `~/.agenthippo/agents/`
+- Project agents: `./.agenthippo/agents/` in the project
 
 ## License
 

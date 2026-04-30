@@ -1,6 +1,6 @@
 # Source Context
 
-Converted from Claude Code plugin: learning-output-style
+Adapted for AgentHippo from upstream plugin source: learning-output-style
 
 # Learning Style Plugin
 

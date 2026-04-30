@@ -5,15 +5,21 @@ metadata:
   name: plugin-dev
   version: 1.0.0
   description: "A comprehensive toolkit for developing Claude Code plugins with expert guidance on hooks, MCP integration, plugin structure, and marketplace publishing."
-  author: claude-code-plugins
+  author: AgentHippo
   license: MIT
   tags:
-    - converted
-    - claude-code-plugin
+    - agenthippo
+    - converted-plugin
+  source:
+    type: claude-code-plugin
+    slug: plugin-dev
+  store:
+    listed: false
+    reason: "Targets Claude Code plugin authoring; needs AgentHippo pack authoring adaptation before public listing."
 
 spec:
-  engine: claude
-  model: claude-sonnet-4-20250514
+  engine: openclaw
+  model: litellm/gpt-5.3-codex
 
   skills:
     - path: skills/agent-development

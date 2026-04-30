@@ -5,15 +5,21 @@ metadata:
   name: learning-output-style
   version: 1.0.0
   description: "This plugin combines the unshipped Learning output style with explanatory functionality as a SessionStart hook."
-  author: claude-code-plugins
+  author: AgentHippo
   license: MIT
   tags:
-    - converted
-    - claude-code-plugin
+    - agenthippo
+    - converted-plugin
+  source:
+    type: claude-code-plugin
+    slug: learning-output-style
+  store:
+    listed: false
+    reason: "Requires AgentHippo session-start hook support before public listing."
 
 spec:
-  engine: claude
-  model: claude-sonnet-4-20250514
+  engine: openclaw
+  model: litellm/gpt-5.3-codex
 
   prompts:
     system: ./AGENTS.md

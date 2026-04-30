@@ -4,7 +4,7 @@ version: 1.0.0
 author: ArvorCo
 description: "Query and manage Salesforce CRM data via the Salesforce CLI (`sf`). Run SOQL/SOSL queries, inspect object schemas, create/update/delete records, bulk import/export, execute Apex, deploy metadata, and make raw REST API calls."
 homepage: https://developer.salesforce.com/tools/salesforcecli
-metadata: {"clawdbot":{"emoji":"☁️","requires":{"bins":["sf"]},"install":[{"id":"npm","kind":"node","package":"@salesforce/cli","bins":["sf"],"label":"Install Salesforce CLI (npm)"}]}}
+metadata: {"agenthippo":{"emoji":"☁️","requires":{"bins":["sf"]},"install":[{"id":"npm","kind":"node","package":"@salesforce/cli","bins":["sf"],"label":"Install Salesforce CLI (npm)"}]}}
 ---
 
 # Salesforce Skill
