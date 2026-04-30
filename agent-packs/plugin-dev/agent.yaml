@@ -1,0 +1,40 @@
+apiVersion: agenthippo.ai/v1
+kind: Agent
+
+metadata:
+  name: plugin-dev
+  version: 1.0.0
+  description: "A comprehensive toolkit for developing Claude Code plugins with expert guidance on hooks, MCP integration, plugin structure, and marketplace publishing."
+  author: claude-code-plugins
+  license: MIT
+  tags:
+    - converted
+    - claude-code-plugin
+
+spec:
+  engine: claude
+  model: claude-sonnet-4-20250514
+
+  skills:
+    - path: skills/agent-development
+    - path: skills/command-development
+    - path: skills/hook-development
+    - path: skills/mcp-integration
+    - path: skills/plugin-settings
+    - path: skills/plugin-structure
+    - path: skills/skill-development
+
+  prompts:
+    system: ./AGENTS.md
+    rules:
+      - ./rules/agent-creator.md
+      - ./rules/plugin-validator.md
+      - ./rules/skill-reviewer.md
+      - ./rules/commands/create-plugin.md
+
+  permissions:
+    approval: unrestricted
+    fileAccess: full
+
+  visibility: public
+

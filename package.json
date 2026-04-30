@@ -4,7 +4,14 @@
   "description": "AgentHippo Store - Agent Packs, Skills, and MCP Servers",
   "scripts": {
     "build": "bun run scripts/build-index.ts",
-    "dev": "bun run scripts/build-index.ts && bunx serve dist"
+    "dev": "bun run scripts/build-index.ts && bunx serve dist",
+    "store:sync": "bash scripts/store/sync-store.sh",
+    "store:convert-plugins": "bash scripts/store/convert-all-plugins.sh",
+    "store:push-packs": "bash scripts/store/push-packs-to-store.sh",
+    "store:push-claude-skills": "bash scripts/store/push-claude-plugin-skills-to-store.sh",
+    "store:push-skills": "bash scripts/store/push-skills-to-store.sh",
+    "store:push-mcp": "bash scripts/store/push-mcp-to-store.sh",
+    "store:verify-installs": "bash scripts/store/verify-store-installs.sh"
   },
   "dependencies": {
     "yaml": "^2.7.1"
@@ -13,4 +20,3 @@
     "@types/bun": "^1.2.14"
   }
 }
-

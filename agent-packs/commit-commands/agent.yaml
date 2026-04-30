@@ -1,0 +1,30 @@
+apiVersion: agenthippo.ai/v1
+kind: Agent
+
+metadata:
+  name: commit-commands
+  version: 1.0.0
+  description: "Streamline your git workflow with simple commands for committing, pushing, and creating pull requests."
+  author: claude-code-plugins
+  license: MIT
+  tags:
+    - converted
+    - claude-code-plugin
+
+spec:
+  engine: claude
+  model: claude-sonnet-4-20250514
+
+  prompts:
+    system: ./AGENTS.md
+    rules:
+      - ./rules/commands/clean_gone.md
+      - ./rules/commands/commit-push-pr.md
+      - ./rules/commands/commit.md
+
+  permissions:
+    approval: unrestricted
+    fileAccess: full
+
+  visibility: public
+

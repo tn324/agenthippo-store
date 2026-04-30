@@ -1,0 +1,30 @@
+apiVersion: agenthippo.ai/v1
+kind: Agent
+
+metadata:
+  name: frontend-design
+  version: 1.0.0
+  description: "Generates distinctive, production-grade frontend interfaces that avoid generic AI aesthetics."
+  author: claude-code-plugins
+  license: MIT
+  tags:
+    - converted
+    - claude-code-plugin
+
+spec:
+  engine: claude
+  model: claude-sonnet-4-20250514
+
+  skills:
+    - path: skills/frontend-design
+
+  prompts:
+    system: ./AGENTS.md
+    rules: []
+
+  permissions:
+    approval: unrestricted
+    fileAccess: full
+
+  visibility: public
+

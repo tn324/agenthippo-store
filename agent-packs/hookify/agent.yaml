@@ -1,0 +1,35 @@
+apiVersion: agenthippo.ai/v1
+kind: Agent
+
+metadata:
+  name: hookify
+  version: 1.0.0
+  description: "Easily create custom hooks to prevent unwanted behaviors by analyzing conversation patterns or from explicit instructions."
+  author: claude-code-plugins
+  license: MIT
+  tags:
+    - converted
+    - claude-code-plugin
+
+spec:
+  engine: claude
+  model: claude-sonnet-4-20250514
+
+  skills:
+    - path: skills/writing-rules
+
+  prompts:
+    system: ./AGENTS.md
+    rules:
+      - ./rules/conversation-analyzer.md
+      - ./rules/commands/configure.md
+      - ./rules/commands/help.md
+      - ./rules/commands/hookify.md
+      - ./rules/commands/list.md
+
+  permissions:
+    approval: unrestricted
+    fileAccess: full
+
+  visibility: public
+

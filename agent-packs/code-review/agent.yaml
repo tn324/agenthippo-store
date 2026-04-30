@@ -1,0 +1,28 @@
+apiVersion: agenthippo.ai/v1
+kind: Agent
+
+metadata:
+  name: code-review
+  version: 1.0.0
+  description: "Automated code review for pull requests using multiple specialized agents with confidence-based scoring to filter false positives."
+  author: claude-code-plugins
+  license: MIT
+  tags:
+    - converted
+    - claude-code-plugin
+
+spec:
+  engine: claude
+  model: claude-sonnet-4-20250514
+
+  prompts:
+    system: ./AGENTS.md
+    rules:
+      - ./rules/commands/code-review.md
+
+  permissions:
+    approval: unrestricted
+    fileAccess: full
+
+  visibility: public
+

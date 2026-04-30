@@ -1,0 +1,27 @@
+apiVersion: agenthippo.ai/v1
+kind: Agent
+
+metadata:
+  name: learning-output-style
+  version: 1.0.0
+  description: "This plugin combines the unshipped Learning output style with explanatory functionality as a SessionStart hook."
+  author: claude-code-plugins
+  license: MIT
+  tags:
+    - converted
+    - claude-code-plugin
+
+spec:
+  engine: claude
+  model: claude-sonnet-4-20250514
+
+  prompts:
+    system: ./AGENTS.md
+    rules: []
+
+  permissions:
+    approval: unrestricted
+    fileAccess: full
+
+  visibility: public
+
