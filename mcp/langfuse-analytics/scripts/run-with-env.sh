@@ -1,12 +1,27 @@
-#!/bin/bash
+#!/usr/bin/env bash
+set -euo pipefail
 #
 # Copyright (c) AgentHippo.ai. All rights reserved.
 #
-# Run the MCP server with Langfuse credentials from .env.local
+# Run the MCP server with Langfuse credentials from .env.local (never commit secrets).
 
-export LANGFUSE_SECRET_KEY="sk-lf-427333f6-80ca-440e-bb6b-6cfaaa02c8d3"
-export LANGFUSE_PUBLIC_KEY="pk-lf-80ec7ea4-03a5-46b2-aed1-d8f2812101bc"
-export LANGFUSE_BASE_URL="http://localhost:3001"
+ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
+ENV_FILE="${ROOT}/.env.local"
 
-exec node "$(dirname "$0")/../dist/index.js"
+if [[ ! -f "$ENV_FILE" ]]; then
+  echo "error: missing ${ENV_FILE}" >&2
+  echo "Copy ${ROOT}/.env.local.example to .env.local and add your Langfuse keys." >&2
+  exit 1
+fi
 
+set -a
+# shellcheck disable=SC1090
+source "$ENV_FILE"
+set +a
+
+: "${LANGFUSE_SECRET_KEY:?Set LANGFUSE_SECRET_KEY in .env.local}"
+: "${LANGFUSE_PUBLIC_KEY:?Set LANGFUSE_PUBLIC_KEY in .env.local}"
+
+export LANGFUSE_BASE_URL="${LANGFUSE_BASE_URL:-http://localhost:3001}"
+
+exec node "${ROOT}/dist/index.js"
