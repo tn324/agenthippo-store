@@ -329,7 +329,7 @@ Store analysis for future reference and comparison.
 
 ## Integration with Plugin Components
 
-### Invoking Plugin Agents
+### Invoking Agents
 
 Commands can trigger plugin agents using the Task tool:
 
