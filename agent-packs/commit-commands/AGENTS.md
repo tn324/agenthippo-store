@@ -1,4 +1,4 @@
-# Commit Commands Plugin Agent
+# Commit Commands Agent
 
 Streamline your git workflow with simple commands for committing, pushing, and creating pull requests.
 
