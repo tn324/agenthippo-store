@@ -289,7 +289,7 @@ See `examples/agent-creation-prompt.md` for complete template.
 
 ## Agent Organization
 
-### Plugin Agents Directory
+### Agents Directory
 
 ```
 plugin-name/
