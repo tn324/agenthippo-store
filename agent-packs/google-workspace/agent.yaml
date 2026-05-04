@@ -1,0 +1,75 @@
+apiVersion: agenthippo.ai/v1
+kind: Agent
+metadata:
+  name: google-workspace
+  version: 0.22.5
+  description: Google Workspace assistant for Gmail, Drive, Docs, Sheets, Calendar, and Workspace workflows via the local gws CLI.
+  author: AgentHippo
+  license: Apache-2.0
+  tags:
+    - google-workspace
+    - gmail
+    - drive
+    - docs
+    - sheets
+    - calendar
+  source:
+    type: googleworkspace-cli
+    repository: https://github.com/googleworkspace/cli
+    commit: a3768d0e82ad83cca2da97724e46bea4ff0e6dbd
+  store:
+    listed: true
+spec:
+  engine: codex
+  model: gpt-5.3-codex
+  skills:
+    - path: skills/gws-shared
+    - path: skills/gws-admin-reports
+    - path: skills/gws-calendar
+    - path: skills/gws-calendar-agenda
+    - path: skills/gws-calendar-insert
+    - path: skills/gws-chat
+    - path: skills/gws-chat-send
+    - path: skills/gws-classroom
+    - path: skills/gws-docs
+    - path: skills/gws-docs-write
+    - path: skills/gws-drive
+    - path: skills/gws-drive-upload
+    - path: skills/gws-events
+    - path: skills/gws-events-renew
+    - path: skills/gws-events-subscribe
+    - path: skills/gws-forms
+    - path: skills/gws-gmail
+    - path: skills/gws-gmail-forward
+    - path: skills/gws-gmail-read
+    - path: skills/gws-gmail-reply
+    - path: skills/gws-gmail-reply-all
+    - path: skills/gws-gmail-send
+    - path: skills/gws-gmail-triage
+    - path: skills/gws-gmail-watch
+    - path: skills/gws-keep
+    - path: skills/gws-meet
+    - path: skills/gws-modelarmor
+    - path: skills/gws-modelarmor-create-template
+    - path: skills/gws-modelarmor-sanitize-prompt
+    - path: skills/gws-modelarmor-sanitize-response
+    - path: skills/gws-people
+    - path: skills/gws-script
+    - path: skills/gws-script-push
+    - path: skills/gws-sheets
+    - path: skills/gws-sheets-append
+    - path: skills/gws-sheets-read
+    - path: skills/gws-slides
+    - path: skills/gws-tasks
+    - path: skills/gws-workflow
+    - path: skills/gws-workflow-email-to-task
+    - path: skills/gws-workflow-file-announce
+    - path: skills/gws-workflow-meeting-prep
+    - path: skills/gws-workflow-standup-report
+    - path: skills/gws-workflow-weekly-digest
+  prompts:
+    system: ./AGENTS.md
+  permissions:
+    approval: unrestricted
+    fileAccess: workspace-write
+  visibility: public

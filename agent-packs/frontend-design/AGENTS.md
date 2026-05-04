@@ -1,4 +1,4 @@
-# Frontend Design Plugin Agent
+# Frontend Design Agent
 
 Generates distinctive, production-grade frontend interfaces that avoid generic AI aesthetics.
 

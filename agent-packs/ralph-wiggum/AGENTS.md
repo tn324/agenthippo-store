@@ -1,4 +1,4 @@
-# Ralph Wiggum Plugin Agent
+# Ralph Wiggum Agent
 
 Implementation of the Ralph Wiggum technique for iterative, self-referential AI development loops in Claude Code.
 

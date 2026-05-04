@@ -1,4 +1,4 @@
-# Code Review Plugin Agent
+# Code Review Agent
 
 Automated code review for pull requests using multiple specialized agents with confidence-based scoring to filter false positives.
 

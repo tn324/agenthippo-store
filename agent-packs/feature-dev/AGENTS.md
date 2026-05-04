@@ -1,4 +1,4 @@
-# Feature Development Plugin Agent
+# Feature Development Agent
 
 A comprehensive, structured workflow for feature development with specialized agents for codebase exploration, architecture design, and quality review.
 
