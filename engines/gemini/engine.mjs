@@ -314,14 +314,12 @@ export class GeminiSdkEngine {
 		const auth = resolveAuth(turn);
 		const authHash = authFingerprint(auth);
 
-		process.env.GEMINI_CLI_HOME = turn.session.engineHomeDir;
+		// The Gemini SDK reads these two vars from process.env internally rather
+		// than accepting them as Config parameters. Both are idempotent across
+		// concurrent calls: GEMINI_CLI_HOME is the same engineHomeDir for every
+		// session of this engine, and GEMINI_CLI_TRUST_WORKSPACE is always 'true'.
+		process.env.GEMINI_CLI_HOME = turn.env.GEMINI_CLI_HOME ?? turn.session.engineHomeDir;
 		process.env.GEMINI_CLI_TRUST_WORKSPACE = 'true';
-		process.env.GEMINI_API_KEY = auth.apiKey;
-		if (auth.baseUrl) {
-			process.env.GOOGLE_GEMINI_BASE_URL = auth.baseUrl;
-		} else {
-			delete process.env.GOOGLE_GEMINI_BASE_URL;
-		}
 
 		let state = this.#sessions.get(turn.session.key);
 		if (!state) {
