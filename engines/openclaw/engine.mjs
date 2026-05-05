@@ -184,6 +184,7 @@ async function startLiteLLMCodexShim({ baseUrl, apiKey, metadataHeaders, logger 
 				body,
 			});
 
+			/** @type {import('http').OutgoingHttpHeaders} */
 			const responseHeaders = {};
 			for (const [key, value] of response.headers.entries()) {
 				if (key.toLowerCase() !== 'content-encoding') {
@@ -209,7 +210,6 @@ async function startLiteLLMCodexShim({ baseUrl, apiKey, metadataHeaders, logger 
 	await new Promise((resolve, reject) => {
 		server.once('error', reject);
 		server.listen(0, '127.0.0.1', () => {
-			server.off('error', reject);
 			resolve(undefined);
 		});
 	});
@@ -275,6 +275,8 @@ function buildOpenClawModelConfig(modelId, baseUrl, options = {}) {
 }
 
 async function writeOpenClawConfig(turn, options = {}) {
+	// Keep OpenClaw's home stable so auth, provider config, and cached state are
+	// shared across AgentHippo conversations. Native session ids separate chats.
 	const stateDir = turn.session.engineHomeDir;
 	const agentDir = path.join(stateDir, 'agents', OPENCLAW_AGENT_ID, 'agent');
 	const sessionsDir = path.join(stateDir, 'agents', OPENCLAW_AGENT_ID, 'sessions');
@@ -365,16 +367,61 @@ function resultError(result) {
 	return undefined;
 }
 
-function commandForSpawn(binary, cliArgs) {
+/**
+ * Parse a .cmd npm shim to find the underlying Node.js script path.
+ * npm Windows shims embed the script path as a quoted string, e.g.:
+ *   "%~dp0\node_modules\openclaw\openclaw.mjs" %*
+ *
+ * @param {string} cmdPath
+ * @param {string} baseDir
+ * @returns {Promise<string | undefined>}
+ */
+async function resolveScriptFromCmdFile(cmdPath, baseDir) {
+	try {
+		const content = await fs.readFile(cmdPath, 'utf8');
+		for (const match of content.matchAll(/"([^"]+\.m?js)"/g)) {
+			const rawPath = match[1].replace(/%~?dp0%?[/\\]?/gi, '');
+			const candidate = path.resolve(baseDir, rawPath);
+			if (existsSync(candidate)) {
+				return candidate;
+			}
+		}
+	} catch { /* ignore */ }
+	return undefined;
+}
+
+/**
+ * Resolve the command and args to spawn the OpenClaw CLI.
+ * On Windows, .cmd shims cannot receive arbitrary stdin/args safely via cmd.exe,
+ * so we locate the underlying Node.js entry script and invoke it directly.
+ *
+ * @param {string} binary
+ * @param {string[]} cliArgs
+ * @returns {Promise<{ command: string; args: string[] }>}
+ */
+async function resolveSpawnCommand(binary, cliArgs) {
 	if (IS_WIN && /\.cmd$/i.test(binary)) {
 		const npmGlobalDir = path.dirname(binary);
-		const openClawScript = path.join(npmGlobalDir, 'node_modules', 'openclaw', 'openclaw.mjs');
-		if (existsSync(openClawScript)) {
-			return {
-				command: process.execPath,
-				args: [openClawScript, ...cliArgs],
-			};
+		// Common locations for the underlying Node.js entry script
+		const candidates = [
+			path.join(npmGlobalDir, 'node_modules', 'openclaw', 'openclaw.mjs'),
+			path.join(npmGlobalDir, 'node_modules', 'hippoclaw', 'openclaw.mjs'),
+			path.join(npmGlobalDir, 'node_modules', 'openclaw', 'bin', 'openclaw.mjs'),
+			path.join(npmGlobalDir, 'node_modules', 'hippoclaw', 'bin', 'openclaw.mjs'),
+		];
+		for (const candidate of candidates) {
+			if (existsSync(candidate)) {
+				return { command: process.execPath, args: [candidate, ...cliArgs] };
+			}
 		}
+		// Parse the .cmd shim itself to extract the script path
+		const parsed = await resolveScriptFromCmdFile(binary, npmGlobalDir);
+		if (parsed) {
+			return { command: process.execPath, args: [parsed, ...cliArgs] };
+		}
+		// Last resort: cmd.exe. Note that cmd.exe special characters in
+		// message args (^, %, !, &, |) may be misinterpreted even when
+		// Node passes them as separate array elements.
 		return {
 			command: process.env.ComSpec || 'cmd.exe',
 			args: ['/d', '/s', '/c', binary, ...cliArgs],
@@ -416,7 +463,6 @@ export class OpenClawCliEngine {
 			baseUrl: shim?.baseUrl,
 			useCodexShim,
 		});
-		await emitter.progress(`Starting OpenClaw (${turn.modelId})...`);
 		runtime.logger.info(`[OpenClaw CLI] state=${stateDir}, config=${configPath}, baseUrl=${baseUrl}, session=${nativeSessionId}`);
 		if (shim) {
 			runtime.logger.info(`[OpenClaw CLI] LiteLLM codex shim target=${shim.targetUrl}`);
@@ -441,7 +487,7 @@ export class OpenClawCliEngine {
 			cliArgs.push('--thinking', thinking);
 		}
 
-		const { command, args } = commandForSpawn(this.#binaryPath, cliArgs);
+		const { command, args } = await resolveSpawnCommand(this.#binaryPath, cliArgs);
 		let stdout = '';
 		try {
 			stdout = await new Promise((resolve, reject) => {
@@ -461,7 +507,8 @@ export class OpenClawCliEngine {
 					windowsHide: true,
 				});
 
-				signal?.addEventListener('abort', () => proc.kill('SIGTERM'), { once: true });
+				const abort = () => proc.kill('SIGTERM');
+				signal?.addEventListener('abort', abort, { once: true });
 
 				let out = '';
 				let err = '';
@@ -475,6 +522,11 @@ export class OpenClawCliEngine {
 				});
 				proc.on('error', error => reject(new Error(`Failed to spawn OpenClaw CLI (${command}): ${error.message}`)));
 				proc.on('close', code => {
+					signal?.removeEventListener('abort', abort);
+					if (signal?.aborted) {
+						reject(new Error('OpenClaw CLI run aborted'));
+						return;
+					}
 					if (code === 0 || code === null) {
 						resolve(out);
 					} else {
