@@ -1,2 +1,3 @@
 dist/
+node_modules/
 scripts/store/agent-packs-plugins/
