@@ -1,0 +1,300 @@
+/*---------------------------------------------------------------------------------------------
+ *  Copyright (c) AgentHippo.ai. All rights reserved.
+ *--------------------------------------------------------------------------------------------*/
+
+// @ts-nocheck - Generated / mirrored from AgentHippo extension templates
+/**
+ * Store Index Builder
+ *
+ * Scans agent-packs/, skills/, mcp/, engines/ directories and builds an Orama search index.
+ * Run with: bun run scripts/build-index.ts  or  npx tsx scripts/build-index.ts
+ */
+
+import { readdir, readFile, writeFile, mkdir, stat } from 'fs/promises';
+import { join, basename } from 'path';
+import { parse as parseYaml } from 'yaml';
+
+// -----------------------------------------------------------------------------
+// Configuration
+// -----------------------------------------------------------------------------
+
+const ARTIFACT_DIRS = {
+	pack: 'agent-packs',
+	skill: 'skills',
+	mcp: 'mcp',
+	engine: 'engines',
+} as const;
+
+const OUTPUT_DIR = 'dist';
+
+// -----------------------------------------------------------------------------
+// Types
+// -----------------------------------------------------------------------------
+
+interface StoreArtifact {
+	id: string;
+	type: 'pack' | 'skill' | 'mcp' | 'engine';
+	slug: string;
+	displayName: string;
+	description: string;
+	tags: string[];
+	author?: string;
+	latestVersion: string;
+	updatedAt: string;
+}
+
+// -----------------------------------------------------------------------------
+// Parsers
+// -----------------------------------------------------------------------------
+
+function parseFrontmatter(content: string): Record<string, unknown> {
+	if (!content.startsWith('---')) {
+		return {};
+	}
+	const lines = content.split('\n');
+	let endIndex = -1;
+	for (let i = 1; i < lines.length; i++) {
+		if (lines[i].trim() === '---') {
+			endIndex = i;
+			break;
+		}
+	}
+	if (endIndex === -1) {
+		return {};
+	}
+	try {
+		return parseYaml(lines.slice(1, endIndex).join('\n')) as Record<string, unknown>;
+	} catch {
+		return {};
+	}
+}
+
+async function parseSkill(dir: string): Promise<StoreArtifact | null> {
+	const slug = basename(dir);
+	try {
+		const content = await readFile(join(dir, 'SKILL.md'), 'utf8');
+		const fm = parseFrontmatter(content);
+		const stats = await stat(join(dir, 'SKILL.md'));
+		return {
+			id: `skill/${slug}`,
+			type: 'skill',
+			slug,
+			displayName: (fm.name as string) || slug,
+			description: (fm.description as string) || '',
+			tags: (fm.tags as string[]) || [],
+			author: fm.author as string | undefined,
+			latestVersion: (fm.version as string) || '0.0.0',
+			updatedAt: stats.mtime.toISOString(),
+		};
+	} catch {
+		return null;
+	}
+}
+
+async function parsePack(dir: string): Promise<StoreArtifact | null> {
+	const slug = basename(dir);
+	try {
+		const content = await readFile(join(dir, 'agent.yaml'), 'utf8');
+		const manifest = parseYaml(content) as Record<string, unknown>;
+		const meta = (manifest.metadata as Record<string, unknown>) || {};
+		const stats = await stat(join(dir, 'agent.yaml'));
+		return {
+			id: `pack/${slug}`,
+			type: 'pack',
+			slug,
+			displayName: (meta.name as string) || slug,
+			description: (meta.description as string) || '',
+			tags: (meta.tags as string[]) || [],
+			author: meta.author as string | undefined,
+			latestVersion: (meta.version as string) || '0.0.0',
+			updatedAt: stats.mtime.toISOString(),
+		};
+	} catch {
+		return null;
+	}
+}
+
+async function parseMcp(dir: string): Promise<StoreArtifact | null> {
+	const slug = basename(dir);
+	try {
+		const content = await readFile(join(dir, 'mcp.json'), 'utf8');
+		const manifest = JSON.parse(content) as Record<string, unknown>;
+		const stats = await stat(join(dir, 'mcp.json'));
+		return {
+			id: `mcp/${slug}`,
+			type: 'mcp',
+			slug,
+			displayName: (manifest.name as string) || slug,
+			description: (manifest.description as string) || '',
+			tags: (manifest.tags as string[]) || [],
+			author: manifest.author as string | undefined,
+			latestVersion: (manifest.version as string) || '0.0.0',
+			updatedAt: stats.mtime.toISOString(),
+		};
+	} catch {
+		return null;
+	}
+}
+
+async function parseEngine(dir: string): Promise<StoreArtifact | null> {
+	const slug = basename(dir);
+	try {
+		const content = await readFile(join(dir, 'engine.manifest.json'), 'utf8');
+		const manifest = JSON.parse(content) as Record<string, unknown>;
+		const stats = await stat(join(dir, 'engine.manifest.json'));
+		const packageJson = await readFile(join(dir, 'package.json'), 'utf8')
+			.then(raw => JSON.parse(raw) as Record<string, unknown>)
+			.catch(() => undefined);
+		const model = manifest.model as Record<string, unknown> | undefined;
+		const defaultModel = typeof model?.defaultModel === 'string'
+			? model.defaultModel
+			: typeof model?.default === 'string'
+				? model.default
+				: undefined;
+		return {
+			id: `engine/${slug}`,
+			type: 'engine',
+			slug,
+			displayName: (manifest.displayName as string) || (manifest.id as string) || slug,
+			description: (manifest.description as string) || '',
+			tags: ['engine', defaultModel].filter(Boolean) as string[],
+			author: manifest.author as string | undefined,
+			latestVersion: (packageJson?.version as string) || '0.0.0',
+			updatedAt: stats.mtime.toISOString(),
+		};
+	} catch {
+		return null;
+	}
+}
+
+// -----------------------------------------------------------------------------
+// Main
+// -----------------------------------------------------------------------------
+
+async function buildIndex() {
+	// allow-any-unicode-next-line
+	console.log('🦛 AgentHippo Store Index Builder');
+	// allow-any-unicode-next-line
+	console.log('──────────────────────────────────');
+	console.log('');
+
+	const artifacts: StoreArtifact[] = [];
+
+	for (const [type, dir] of Object.entries(ARTIFACT_DIRS)) {
+		let entries: string[] = [];
+		try {
+			entries = await readdir(dir);
+		} catch {
+			// allow-any-unicode-next-line
+			console.log(`📁 ${dir}/ not found, skipping...`);
+			continue;
+		}
+
+		// allow-any-unicode-next-line
+		console.log(`📁 Scanning ${dir}/`);
+		for (const entry of entries) {
+			if (entry.startsWith('.')) {
+				continue;
+			}
+			const path = join(dir, entry);
+			const s = await stat(path).catch(() => null);
+			if (!s?.isDirectory()) {
+				continue;
+			}
+
+			let artifact: StoreArtifact | null = null;
+			if (type === 'skill') {
+				artifact = await parseSkill(path);
+			} else if (type === 'pack') {
+				artifact = await parsePack(path);
+			} else if (type === 'mcp') {
+				artifact = await parseMcp(path);
+			} else if (type === 'engine') {
+				artifact = await parseEngine(path);
+			}
+
+			if (artifact) {
+				artifacts.push(artifact);
+				// allow-any-unicode-next-line
+				console.log(`   ✓ ${artifact.displayName} (${artifact.slug})`);
+			}
+		}
+	}
+
+	console.log('');
+	// allow-any-unicode-next-line
+	console.log(`📦 Building index with ${artifacts.length} artifacts...`);
+
+	await mkdir(OUTPUT_DIR, { recursive: true });
+
+	// Main index for Orama
+	const index = {
+		version: 1,
+		generatedAt: new Date().toISOString(),
+		generator: 'AgentHippo Store Index Builder',
+		artifacts,
+	};
+
+	await writeFile(join(OUTPUT_DIR, 'store-index.json'), JSON.stringify(index, null, 2));
+	await writeFile(join(OUTPUT_DIR, 'store-orama.json'), JSON.stringify({ artifacts }));
+	await writeFile(
+		join(OUTPUT_DIR, 'store-meta.json'),
+		JSON.stringify(
+			{
+				version: 1,
+				generatedAt: new Date().toISOString(),
+				artifactCount: artifacts.length,
+			},
+			null,
+			2,
+		),
+	);
+
+	// Create a simple index.html for GitHub Pages landing
+	await writeFile(
+		join(OUTPUT_DIR, 'index.html'),
+		`<!DOCTYPE html>
+<html>
+<head>
+	<title>AgentHippo Store Index</title>
+	<meta charset="utf-8">
+	<style>
+		body { font-family: system-ui; max-width: 600px; margin: 2rem auto; padding: 1rem; }
+		h1 { display: flex; align-items: center; gap: 0.5rem; }
+		a { color: #0969da; }
+		code { background: #f6f8fa; padding: 0.2em 0.4em; border-radius: 3px; }
+	</style>
+</head>
+<body>
+	` + /* allow-any-unicode-next-line */ `
+	<h1>🦛 AgentHippo Store Index</h1>
+	<p>This is the search index for the AgentHippo extension store.</p>
+	<ul>
+		<li><a href="store-index.json">store-index.json</a> - Full artifact metadata</li>
+		<li><a href="store-orama.json">store-orama.json</a> - Orama search index</li>
+		<li><a href="store-meta.json">store-meta.json</a> - Index metadata</li>
+	</ul>
+	<p>Generated: ${new Date().toISOString()}</p>
+	<p>Artifacts: ${artifacts.length}</p>
+</body>
+</html>`,
+	);
+
+	console.log('');
+	// allow-any-unicode-next-line
+	console.log('✅ Index built successfully!');
+	// allow-any-unicode-next-line
+	console.log(`   📄 ${OUTPUT_DIR}/store-index.json`);
+	// allow-any-unicode-next-line
+	console.log(`   📄 ${OUTPUT_DIR}/store-orama.json`);
+	// allow-any-unicode-next-line
+	console.log(`   📄 ${OUTPUT_DIR}/store-meta.json`);
+	// allow-any-unicode-next-line
+	console.log(`   📄 ${OUTPUT_DIR}/index.html`);
+}
+
+buildIndex().catch((e) => {
+	// allow-any-unicode-next-line
+	console.error('❌ Build failed:', e);
+	process.exit(1);
+});
