@@ -1,0 +1,23 @@
+{
+  "version": 2,
+  "id": "cursor",
+  "displayName": "Cursor",
+  "description": "Cursor TypeScript SDK agent engine (@cursor/sdk)",
+  "entry": "./engine.mjs",
+  "engineExport": "CursorSdkEngine",
+  "homeEnvVar": "CURSOR_ENGINE_HOME",
+  "workspaceSync": {
+    "enabled": true,
+    "dir": ".cursor",
+    "rulesFile": "CURSOR.md",
+    "includeSkills": true,
+    "includeRules": true
+  },
+  "promptInjection": {
+    "mode": "message-suffix"
+  },
+  "model": {
+    "defaultModel": "auto",
+    "apiKeyEnvVar": "CURSOR_API_KEY"
+  }
+}
