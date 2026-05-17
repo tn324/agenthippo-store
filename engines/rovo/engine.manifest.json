@@ -1,0 +1,23 @@
+{
+  "version": 2,
+  "id": "rovo",
+  "displayName": "Rovo",
+  "description": "Atlassian Rovo Dev CLI agent engine (acli rovodev)",
+  "entry": "./engine.mjs",
+  "engineExport": "RovoDevCliEngine",
+  "homeEnvVar": "ROVODEV_HOME",
+  "workspaceSync": {
+    "enabled": true,
+    "dir": ".rovodev",
+    "rulesFile": "ROVO.md",
+    "includeSkills": true,
+    "includeRules": true
+  },
+  "promptInjection": {
+    "mode": "message-suffix"
+  },
+  "model": {
+    "defaultModel": "default",
+    "apiKeyEnvVar": "ATLASSIAN_API_TOKEN"
+  }
+}
